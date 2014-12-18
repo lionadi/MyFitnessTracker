@@ -9,6 +9,6 @@ namespace MyFitnessTracker.Models
     {
         public int SetId { get; set; }
         public String Name { get; set; }
-        public List<Exercise> Excercises { get; set; }
+        public int ExerciseId { get; set; }
     }
 }

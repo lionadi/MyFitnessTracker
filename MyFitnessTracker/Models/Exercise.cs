@@ -8,7 +8,7 @@ namespace MyFitnessTracker.Models
     public class Exercise
     {
         public int ExerciseId { get; set; }
-        public List<int> Targets { get; set; }
+        public int Target { get; set; }
         public String Name { get; set; }
     }
 }
