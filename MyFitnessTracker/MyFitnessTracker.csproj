@@ -46,6 +46,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -161,19 +163,56 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AspNetRole.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUser.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserClaim.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserLogin.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Exercise.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExerciseRecord.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\Exercise.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Set.cs" />
+    <Compile Include="MyFitTrackerDB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyFitTrackerDB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MyFitTrackerDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MyFitTrackerDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MyFitTrackerDB.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Set.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SetExcercis.cs">
+      <DependentUpon>MyFitTrackerDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +224,23 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EntityDeploy Include="MyFitTrackerDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MyFitTrackerDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="MyFitTrackerDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyFitTrackerDB.edmx</DependentUpon>
+      <LastGenOutput>MyFitTrackerDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="MyFitTrackerDB.edmx.diagram">
+      <DependentUpon>MyFitTrackerDB.edmx</DependentUpon>
+    </Content>
+    <Content Include="MyFitTrackerDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MyFitTrackerDB.edmx</DependentUpon>
+      <LastGenOutput>MyFitTrackerDB.cs</LastGenOutput>
+    </Content>
     <None Include="Properties\PublishProfiles\MyFitnessTracker.pubxml" />
     <None Include="Scripts\jquery-1.10.2-vsdoc.js" />
     <Content Include="Scripts\Highcharts-4.0.1\js\adapters\standalone-framework.js" />
@@ -276,6 +332,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

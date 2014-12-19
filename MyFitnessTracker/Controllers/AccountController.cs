@@ -89,6 +89,7 @@ namespace MyFitnessTracker.Controllers
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
+
         }
 
         //
