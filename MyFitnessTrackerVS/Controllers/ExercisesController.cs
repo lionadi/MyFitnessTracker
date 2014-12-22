@@ -10,6 +10,7 @@ using MyFitnessTrackerVS;
 
 namespace MyFitnessTrackerVS.Controllers
 {
+    [Authorize]
     public class ExercisesController : Controller
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();

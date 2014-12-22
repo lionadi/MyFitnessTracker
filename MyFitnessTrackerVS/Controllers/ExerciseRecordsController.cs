@@ -10,6 +10,7 @@ using MyFitnessTrackerVS;
 
 namespace MyFitnessTrackerVS.Controllers
 {
+    [Authorize]
     public class ExerciseRecordsController : Controller
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
@@ -17,7 +18,7 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: ExerciseRecords
         public ActionResult Index()
         {
-            var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise);
+            var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise).Include(e => e.Set);
             return View(exerciseRecords.ToList());
         }
 
@@ -40,7 +41,13 @@ namespace MyFitnessTrackerVS.Controllers
         public ActionResult Create()
         {
             ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name");
-            return View();
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name");
+            var model = new ExerciseRecord();
+            model.Record = 0;
+            model.Date = DateTime.Now;
+            model.StartDate = DateTime.Now;
+            model.EndDate = DateTime.Now;
+            return View(model);
         }
 
         // POST: ExerciseRecords/Create
@@ -48,7 +55,7 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId")] ExerciseRecord exerciseRecord)
+        public ActionResult Create([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId,SetId")] ExerciseRecord exerciseRecord)
         {
             if (ModelState.IsValid)
             {
@@ -58,6 +65,7 @@ namespace MyFitnessTrackerVS.Controllers
             }
 
             ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name", exerciseRecord.SetId);
             return View(exerciseRecord);
         }
 
@@ -74,6 +82,7 @@ namespace MyFitnessTrackerVS.Controllers
                 return HttpNotFound();
             }
             ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name", exerciseRecord.SetId);
             return View(exerciseRecord);
         }
 
@@ -82,7 +91,7 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId")] ExerciseRecord exerciseRecord)
+        public ActionResult Edit([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId,SetId")] ExerciseRecord exerciseRecord)
         {
             if (ModelState.IsValid)
             {
@@ -91,6 +100,7 @@ namespace MyFitnessTrackerVS.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name", exerciseRecord.SetId);
             return View(exerciseRecord);
         }
 

@@ -26,6 +26,9 @@
         <th>
             @Html.DisplayNameFor(model => model.Exercise.Name)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Set.Name)
+        </th>
         <th></th>
     </tr>
 
@@ -45,6 +48,9 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Exercise.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Set.Name)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
