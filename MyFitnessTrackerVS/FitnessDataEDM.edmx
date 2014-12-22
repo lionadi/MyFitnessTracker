@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MyFitnessTrackerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Exercise">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="255" Nullable="false" />
+          <Property Name="Target" Type="float" Nullable="false" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ExerciseRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Record" Type="float" Nullable="false" />
+          <Property Name="Date" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="StartDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="EndDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ExerciseId" Type="bigint" Nullable="false" />
+          <Property Name="SetId" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Set">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="255" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'MyFitnessTrackerDB.dbo.SetExercises' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SetExercises">
+          <Key>
+            <PropertyRef Name="SetID" />
+            <PropertyRef Name="ExerciseID" />
+          </Key>
+          <Property Name="SetID" Type="bigint" Nullable="false" />
+          <Property Name="ExerciseID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_ExerciseRecord_Exercise">
+          <End Role="Exercise" Type="Self.Exercise" Multiplicity="1" />
+          <End Role="ExerciseRecord" Type="Self.ExerciseRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Exercise">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseRecord">
+              <PropertyRef Name="ExerciseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExerciseRecord_Set">
+          <End Role="Set" Type="Self.Set" Multiplicity="1" />
+          <End Role="ExerciseRecord" Type="Self.ExerciseRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Set">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseRecord">
+              <PropertyRef Name="SetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SetExercises_Exercise">
+          <End Role="Exercise" Type="Self.Exercise" Multiplicity="1" />
+          <End Role="SetExercises" Type="Self.SetExercises" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Exercise">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetExercises">
+              <PropertyRef Name="ExerciseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SetExercises_Set">
+          <End Role="Set" Type="Self.Set" Multiplicity="1" />
+          <End Role="SetExercises" Type="Self.SetExercises" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Set">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetExercises">
+              <PropertyRef Name="SetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SetExercises_Set1">
+          <End Role="Set" Type="Self.Set" Multiplicity="1" />
+          <End Role="SetExercises" Type="Self.SetExercises" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Set">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SetExercises">
+              <PropertyRef Name="SetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MyFitnessTrackerDBModelStoreContainer">
+          <EntitySet Name="Exercise" EntityType="Self.Exercise" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExerciseRecord" EntityType="Self.ExerciseRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Set" EntityType="Self.Set" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SetExercises" EntityType="Self.SetExercises" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SetExercises].[SetID] AS [SetID], 
+    [SetExercises].[ExerciseID] AS [ExerciseID]
+    FROM [dbo].[SetExercises] AS [SetExercises]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ExerciseRecord_Exercise" Association="Self.FK_ExerciseRecord_Exercise">
+            <End Role="Exercise" EntitySet="Exercise" />
+            <End Role="ExerciseRecord" EntitySet="ExerciseRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExerciseRecord_Set" Association="Self.FK_ExerciseRecord_Set">
+            <End Role="Set" EntitySet="Set" />
+            <End Role="ExerciseRecord" EntitySet="ExerciseRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SetExercises_Exercise" Association="Self.FK_SetExercises_Exercise">
+            <End Role="Exercise" EntitySet="Exercise" />
+            <End Role="SetExercises" EntitySet="SetExercises" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SetExercises_Set" Association="Self.FK_SetExercises_Set">
+            <End Role="Set" EntitySet="Set" />
+            <End Role="SetExercises" EntitySet="SetExercises" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SetExercises_Set1" Association="Self.FK_SetExercises_Set1">
+            <End Role="Set" EntitySet="Set" />
+            <End Role="SetExercises" EntitySet="SetExercises" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MyFitnessTrackerDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Exercise">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Target" Type="Double" Nullable="false" />
+          <Property Name="UserID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ExerciseRecords" Relationship="Self.FK_ExerciseRecord_Exercise" FromRole="Exercise" ToRole="ExerciseRecord" />
+          <NavigationProperty Name="Sets" Relationship="Self.SetExercises" FromRole="Exercise" ToRole="Set" />
+        </EntityType>
+        <EntityType Name="ExerciseRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Record" Type="Double" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ExerciseId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Exercise" Relationship="Self.FK_ExerciseRecord_Exercise" FromRole="ExerciseRecord" ToRole="Exercise" />
+          <Property Name="SetId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Set" Relationship="MyFitnessTrackerDBModel.FK_ExerciseRecord_Set" FromRole="ExerciseRecord" ToRole="Set" />
+        </EntityType>
+        <EntityType Name="Set">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Exercises" Relationship="Self.SetExercises" FromRole="Set" ToRole="Exercise" />
+          <NavigationProperty Name="ExerciseRecords" Relationship="MyFitnessTrackerDBModel.FK_ExerciseRecord_Set" FromRole="Set" ToRole="ExerciseRecord" />
+        </EntityType>
+        <Association Name="FK_ExerciseRecord_Exercise">
+          <End Role="Exercise" Type="Self.Exercise" Multiplicity="1" />
+          <End Role="ExerciseRecord" Type="Self.ExerciseRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Exercise">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseRecord">
+              <PropertyRef Name="ExerciseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SetExercises">
+          <End Role="Exercise" Type="Self.Exercise" Multiplicity="*" />
+          <End Role="Set" Type="Self.Set" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="MyFitnessTrackerDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Exercises" EntityType="Self.Exercise" />
+          <EntitySet Name="ExerciseRecords" EntityType="Self.ExerciseRecord" />
+          <EntitySet Name="Sets" EntityType="Self.Set" />
+          <AssociationSet Name="FK_ExerciseRecord_Exercise" Association="Self.FK_ExerciseRecord_Exercise">
+            <End Role="Exercise" EntitySet="Exercises" />
+            <End Role="ExerciseRecord" EntitySet="ExerciseRecords" />
+          </AssociationSet>
+          <AssociationSet Name="SetExercises" Association="Self.SetExercises">
+            <End Role="Exercise" EntitySet="Exercises" />
+            <End Role="Set" EntitySet="Sets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExerciseRecord_Set" Association="MyFitnessTrackerDBModel.FK_ExerciseRecord_Set">
+            <End Role="Set" EntitySet="Sets" />
+            <End Role="ExerciseRecord" EntitySet="ExerciseRecords" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_ExerciseRecord_Set">
+          <End Type="MyFitnessTrackerDBModel.Set" Role="Set" Multiplicity="1" />
+          <End Type="MyFitnessTrackerDBModel.ExerciseRecord" Role="ExerciseRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Set">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseRecord">
+              <PropertyRef Name="SetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MyFitnessTrackerDBModelStoreContainer" CdmEntityContainer="MyFitnessTrackerDBEntities">
+          <EntitySetMapping Name="Exercises">
+            <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.Exercise">
+              <MappingFragment StoreEntitySet="Exercise">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Target" ColumnName="Target" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExerciseRecords">
+            <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.ExerciseRecord">
+              <MappingFragment StoreEntitySet="ExerciseRecord">
+                <ScalarProperty Name="SetId" ColumnName="SetId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Record" ColumnName="Record" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="ExerciseId" ColumnName="ExerciseId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sets">
+            <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.Set">
+              <MappingFragment StoreEntitySet="Set">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="SetExercises" TypeName="MyFitnessTrackerDBModel.SetExercises" StoreEntitySet="SetExercises">
+            <EndProperty Name="Exercise">
+              <ScalarProperty Name="Id" ColumnName="ExerciseID" />
+            </EndProperty>
+            <EndProperty Name="Set">
+              <ScalarProperty Name="Id" ColumnName="SetID" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

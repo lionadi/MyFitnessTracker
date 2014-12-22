@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFitnessTrackerVS", "MyFitnessTrackerVS\MyFitnessTrackerVS.csproj", "{9ABB2CDF-4C11-4C2F-A045-390F71103E02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{03C2D742-665F-4678-A187-1A1EDBAD0ED6}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\AzureWebsitePublishModule.psm1 = PublishScripts\AzureWebsitePublishModule.psm1
+		PublishScripts\Publish-WebApplicationWebsite.ps1 = PublishScripts\Publish-WebApplicationWebsite.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configurations", "{B3125746-FF34-4A83-BB02-207A75288B9D}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Configurations\MyFitnessTrackerVS-WAWS-dev.json = PublishScripts\Configurations\MyFitnessTrackerVS-WAWS-dev.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6E0CFB1C-59AE-40E8-94C6-F8321A34F369}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9ABB2CDF-4C11-4C2F-A045-390F71103E02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ABB2CDF-4C11-4C2F-A045-390F71103E02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ABB2CDF-4C11-4C2F-A045-390F71103E02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ABB2CDF-4C11-4C2F-A045-390F71103E02}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B3125746-FF34-4A83-BB02-207A75288B9D} = {03C2D742-665F-4678-A187-1A1EDBAD0ED6}
+	EndGlobalSection
+EndGlobal
