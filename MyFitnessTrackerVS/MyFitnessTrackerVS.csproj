@@ -219,13 +219,21 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="AspNetUser.cs">
+      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AspNetUsersController.cs" />
+    <Compile Include="Controllers\ExerciseAttributesController.cs" />
     <Compile Include="Controllers\ExerciseRecordsController.cs" />
     <Compile Include="Controllers\ExercisesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SetsController.cs" />
     <Compile Include="Exercise.cs">
+      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExerciseAttribute.cs">
       <DependentUpon>FitnessDataEDM.tt</DependentUpon>
     </Compile>
     <Compile Include="ExerciseRecord.cs">
@@ -249,6 +257,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Globals\Constants.cs" />
+    <Compile Include="Globals\SessionHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -333,24 +343,26 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Sets\Create.cshtml" />
-    <Content Include="Views\Sets\Delete.cshtml" />
-    <Content Include="Views\Sets\Details.cshtml" />
-    <Content Include="Views\Sets\Edit.cshtml" />
-    <Content Include="Views\Sets\Index.cshtml" />
-    <Content Include="Views\ExerciseRecords\Create.cshtml" />
-    <Content Include="Views\ExerciseRecords\Delete.cshtml" />
-    <Content Include="Views\ExerciseRecords\Details.cshtml" />
-    <Content Include="Views\ExerciseRecords\Edit.cshtml" />
-    <Content Include="Views\ExerciseRecords\Index.cshtml" />
     <Content Include="Views\Exercises\Create.cshtml" />
     <Content Include="Views\Exercises\Delete.cshtml" />
     <Content Include="Views\Exercises\Details.cshtml" />
     <Content Include="Views\Exercises\Edit.cshtml" />
     <Content Include="Views\Exercises\Index.cshtml" />
+    <Content Include="Views\ExerciseRecords\Create.cshtml" />
+    <Content Include="Views\ExerciseRecords\Delete.cshtml" />
+    <Content Include="Views\ExerciseRecords\Details.cshtml" />
+    <Content Include="Views\ExerciseRecords\Edit.cshtml" />
+    <Content Include="Views\ExerciseRecords\Index.cshtml" />
+    <Content Include="Views\Sets\Create.cshtml" />
+    <Content Include="Views\Sets\Delete.cshtml" />
+    <Content Include="Views\Sets\Details.cshtml" />
+    <Content Include="Views\Sets\Edit.cshtml" />
+    <Content Include="Views\Sets\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\AspNetUsers\" />
+    <Folder Include="Views\ExerciseAttributes\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -10,25 +11,25 @@ using MyFitnessTrackerVS;
 
 namespace MyFitnessTrackerVS.Controllers
 {
-    [Authorize]
     public class ExercisesController : Controller
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: Exercises
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View(db.Exercises.ToList());
+            var exercises = db.Exercises.Include(e => e.AspNetUser).Include(e => e.Set);
+            return View(await exercises.ToListAsync());
         }
 
         // GET: Exercises/Details/5
-        public ActionResult Details(long? id)
+        public async Task<ActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Exercise exercise = db.Exercises.Find(id);
+            Exercise exercise = await db.Exercises.FindAsync(id);
             if (exercise == null)
             {
                 return HttpNotFound();
@@ -39,6 +40,8 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: Exercises/Create
         public ActionResult Create()
         {
+            ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email");
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name");
             return View();
         }
 
@@ -47,30 +50,34 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Target,UserID")] Exercise exercise)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name,Target,UserID,SetId")] Exercise exercise)
         {
             if (ModelState.IsValid)
             {
                 db.Exercises.Add(exercise);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
+            ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", exercise.UserID);
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name", exercise.SetId);
             return View(exercise);
         }
 
         // GET: Exercises/Edit/5
-        public ActionResult Edit(long? id)
+        public async Task<ActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Exercise exercise = db.Exercises.Find(id);
+            Exercise exercise = await db.Exercises.FindAsync(id);
             if (exercise == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", exercise.UserID);
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name", exercise.SetId);
             return View(exercise);
         }
 
@@ -79,25 +86,27 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Target,UserID")] Exercise exercise)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Target,UserID,SetId")] Exercise exercise)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(exercise).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
+            ViewBag.UserID = new SelectList(db.AspNetUsers, "Id", "Email", exercise.UserID);
+            ViewBag.SetId = new SelectList(db.Sets, "Id", "Name", exercise.SetId);
             return View(exercise);
         }
 
         // GET: Exercises/Delete/5
-        public ActionResult Delete(long? id)
+        public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Exercise exercise = db.Exercises.Find(id);
+            Exercise exercise = await db.Exercises.FindAsync(id);
             if (exercise == null)
             {
                 return HttpNotFound();
@@ -108,11 +117,11 @@ namespace MyFitnessTrackerVS.Controllers
         // POST: Exercises/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(long id)
+        public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            Exercise exercise = db.Exercises.Find(id);
+            Exercise exercise = await db.Exercises.FindAsync(id);
             db.Exercises.Remove(exercise);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

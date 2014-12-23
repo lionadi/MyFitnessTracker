@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -10,26 +11,25 @@ using MyFitnessTrackerVS;
 
 namespace MyFitnessTrackerVS.Controllers
 {
-    [Authorize]
     public class ExerciseRecordsController : Controller
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: ExerciseRecords
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise).Include(e => e.Set);
-            return View(exerciseRecords.ToList());
+            return View(await exerciseRecords.ToListAsync());
         }
 
         // GET: ExerciseRecords/Details/5
-        public ActionResult Details(long? id)
+        public async Task<ActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseRecord exerciseRecord = db.ExerciseRecords.Find(id);
+            ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
             if (exerciseRecord == null)
             {
                 return HttpNotFound();
@@ -43,10 +43,10 @@ namespace MyFitnessTrackerVS.Controllers
             ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name");
             ViewBag.SetId = new SelectList(db.Sets, "Id", "Name");
             var model = new ExerciseRecord();
-            model.Record = 0;
             model.Date = DateTime.Now;
             model.StartDate = DateTime.Now;
             model.EndDate = DateTime.Now;
+            model.Record = 0;
             return View(model);
         }
 
@@ -55,12 +55,12 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId,SetId")] ExerciseRecord exerciseRecord)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId,SetId")] ExerciseRecord exerciseRecord)
         {
             if (ModelState.IsValid)
             {
                 db.ExerciseRecords.Add(exerciseRecord);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
@@ -70,13 +70,13 @@ namespace MyFitnessTrackerVS.Controllers
         }
 
         // GET: ExerciseRecords/Edit/5
-        public ActionResult Edit(long? id)
+        public async Task<ActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseRecord exerciseRecord = db.ExerciseRecords.Find(id);
+            ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
             if (exerciseRecord == null)
             {
                 return HttpNotFound();
@@ -91,12 +91,12 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId,SetId")] ExerciseRecord exerciseRecord)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Record,Date,StartDate,EndDate,ExerciseId,SetId")] ExerciseRecord exerciseRecord)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(exerciseRecord).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
@@ -105,13 +105,13 @@ namespace MyFitnessTrackerVS.Controllers
         }
 
         // GET: ExerciseRecords/Delete/5
-        public ActionResult Delete(long? id)
+        public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExerciseRecord exerciseRecord = db.ExerciseRecords.Find(id);
+            ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
             if (exerciseRecord == null)
             {
                 return HttpNotFound();
@@ -122,11 +122,11 @@ namespace MyFitnessTrackerVS.Controllers
         // POST: ExerciseRecords/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(long id)
+        public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            ExerciseRecord exerciseRecord = db.ExerciseRecords.Find(id);
+            ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
             db.ExerciseRecords.Remove(exerciseRecord);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

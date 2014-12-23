@@ -12,20 +12,14 @@ namespace MyFitnessTrackerVS
     using System;
     using System.Collections.Generic;
     
-    public partial class Set
+    public partial class ExerciseAttribute
     {
-        public Set()
-        {
-            this.Exercises = new HashSet<Exercise>();
-            this.ExerciseRecords = new HashSet<ExerciseRecord>();
-        }
-    
         public long Id { get; set; }
+        public short AttributeID { get; set; }
         public string Name { get; set; }
-        public string UserId { get; set; }
+        public string Data { get; set; }
+        public long ExerciseId { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<Exercise> Exercises { get; set; }
-        public virtual ICollection<ExerciseRecord> ExerciseRecords { get; set; }
+        public virtual Exercise Exercise { get; set; }
     }
 }

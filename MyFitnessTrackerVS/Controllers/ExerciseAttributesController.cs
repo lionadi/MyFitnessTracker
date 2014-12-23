@@ -11,112 +11,112 @@ using MyFitnessTrackerVS;
 
 namespace MyFitnessTrackerVS.Controllers
 {
-    public class SetsController : Controller
+    public class ExerciseAttributesController : Controller
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
-        // GET: Sets
+        // GET: ExerciseAttributes
         public async Task<ActionResult> Index()
         {
-            var sets = db.Sets.Include(s => s.AspNetUser);
-            return View(await sets.ToListAsync());
+            var exerciseAttributes = db.ExerciseAttributes.Include(e => e.Exercise);
+            return View(await exerciseAttributes.ToListAsync());
         }
 
-        // GET: Sets/Details/5
+        // GET: ExerciseAttributes/Details/5
         public async Task<ActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Set set = await db.Sets.FindAsync(id);
-            if (set == null)
+            ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
+            if (exerciseAttribute == null)
             {
                 return HttpNotFound();
             }
-            return View(set);
+            return View(exerciseAttribute);
         }
 
-        // GET: Sets/Create
+        // GET: ExerciseAttributes/Create
         public ActionResult Create()
         {
-            ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email");
+            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name");
             return View();
         }
 
-        // POST: Sets/Create
+        // POST: ExerciseAttributes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,UserId")] Set set)
+        public async Task<ActionResult> Create([Bind(Include = "Id,AttributeID,Name,Data,ExerciseId")] ExerciseAttribute exerciseAttribute)
         {
             if (ModelState.IsValid)
             {
-                db.Sets.Add(set);
+                db.ExerciseAttributes.Add(exerciseAttribute);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email", set.UserId);
-            return View(set);
+            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseAttribute.ExerciseId);
+            return View(exerciseAttribute);
         }
 
-        // GET: Sets/Edit/5
+        // GET: ExerciseAttributes/Edit/5
         public async Task<ActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Set set = await db.Sets.FindAsync(id);
-            if (set == null)
+            ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
+            if (exerciseAttribute == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email", set.UserId);
-            return View(set);
+            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseAttribute.ExerciseId);
+            return View(exerciseAttribute);
         }
 
-        // POST: Sets/Edit/5
+        // POST: ExerciseAttributes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,UserId")] Set set)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,AttributeID,Name,Data,ExerciseId")] ExerciseAttribute exerciseAttribute)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(set).State = EntityState.Modified;
+                db.Entry(exerciseAttribute).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email", set.UserId);
-            return View(set);
+            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseAttribute.ExerciseId);
+            return View(exerciseAttribute);
         }
 
-        // GET: Sets/Delete/5
+        // GET: ExerciseAttributes/Delete/5
         public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Set set = await db.Sets.FindAsync(id);
-            if (set == null)
+            ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
+            if (exerciseAttribute == null)
             {
                 return HttpNotFound();
             }
-            return View(set);
+            return View(exerciseAttribute);
         }
 
-        // POST: Sets/Delete/5
+        // POST: ExerciseAttributes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            Set set = await db.Sets.FindAsync(id);
-            db.Sets.Remove(set);
+            ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
+            db.ExerciseAttributes.Remove(exerciseAttribute);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
