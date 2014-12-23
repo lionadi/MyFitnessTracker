@@ -16,7 +16,6 @@ namespace MyFitnessTrackerVS
     {
         public AspNetUser()
         {
-            this.Exercises = new HashSet<Exercise>();
             this.Sets = new HashSet<Set>();
         }
     
@@ -33,7 +32,6 @@ namespace MyFitnessTrackerVS
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
     
-        public virtual ICollection<Exercise> Exercises { get; set; }
         public virtual ICollection<Set> Sets { get; set; }
     }
 }

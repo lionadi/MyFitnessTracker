@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="90da4f3c38d345c09815e795d0300fb3" Name="Diagram1">
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.AspNetUser" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.Exercise" Width="1.5" PointX="5.25" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.ExerciseRecord" Width="1.5" PointX="7.5" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.Set" Width="1.5" PointX="3" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.ExerciseAttribute" Width="1.5" PointX="7.5" PointY="4.25" IsExpanded="true" />
+        <AssociationConnector Association="MyFitnessTrackerDBModel.FK_Set_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="MyFitnessTrackerDBModel.FK_Exercise_Set1" ManuallyRouted="false" />
+        <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise" ManuallyRouted="false" />
+        <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseRecord_Exercise" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

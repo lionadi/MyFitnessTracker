@@ -218,9 +218,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AspNetUser.cs">
-      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+      <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspNetUsersController.cs" />
@@ -231,28 +230,28 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SetsController.cs" />
     <Compile Include="Exercise.cs">
-      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+      <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="ExerciseAttribute.cs">
-      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+      <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="ExerciseRecord.cs">
-      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+      <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
-    <Compile Include="FitnessDataEDM.Context.cs">
+    <Compile Include="FitnessData.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FitnessDataEDM.Context.tt</DependentUpon>
+      <DependentUpon>FitnessData.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="FitnessDataEDM.cs">
+    <Compile Include="FitnessData.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+      <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
-    <Compile Include="FitnessDataEDM.Designer.cs">
+    <Compile Include="FitnessData.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FitnessDataEDM.edmx</DependentUpon>
+      <DependentUpon>FitnessData.edmx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -264,7 +263,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Set.cs">
-      <DependentUpon>FitnessDataEDM.tt</DependentUpon>
+      <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -278,22 +277,22 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config" />
-    <EntityDeploy Include="FitnessDataEDM.edmx">
+    <EntityDeploy Include="FitnessData.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>FitnessDataEDM.Designer.cs</LastGenOutput>
+      <LastGenOutput>FitnessData.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="FitnessDataEDM.Context.tt">
+    <Content Include="FitnessData.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>FitnessDataEDM.edmx</DependentUpon>
-      <LastGenOutput>FitnessDataEDM.Context.cs</LastGenOutput>
+      <DependentUpon>FitnessData.edmx</DependentUpon>
+      <LastGenOutput>FitnessData.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="FitnessDataEDM.edmx.diagram">
-      <DependentUpon>FitnessDataEDM.edmx</DependentUpon>
+    <Content Include="FitnessData.edmx.diagram">
+      <DependentUpon>FitnessData.edmx</DependentUpon>
     </Content>
-    <Content Include="FitnessDataEDM.tt">
+    <Content Include="FitnessData.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>FitnessDataEDM.edmx</DependentUpon>
-      <LastGenOutput>FitnessDataEDM.cs</LastGenOutput>
+      <DependentUpon>FitnessData.edmx</DependentUpon>
+      <LastGenOutput>FitnessData.cs</LastGenOutput>
     </Content>
     <None Include="Properties\PublishProfiles\MyFitnessTrackerVS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

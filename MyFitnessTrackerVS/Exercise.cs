@@ -23,10 +23,8 @@ namespace MyFitnessTrackerVS
         public long Id { get; set; }
         public string Name { get; set; }
         public double Target { get; set; }
-        public string UserID { get; set; }
         public long SetId { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
         public virtual Set Set { get; set; }
         public virtual ICollection<ExerciseAttribute> ExerciseAttributes { get; set; }
         public virtual ICollection<ExerciseRecord> ExerciseRecords { get; set; }

@@ -20,9 +20,7 @@ namespace MyFitnessTrackerVS
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
         public long ExerciseId { get; set; }
-        public long SetId { get; set; }
     
         public virtual Exercise Exercise { get; set; }
-        public virtual Set Set { get; set; }
     }
 }
