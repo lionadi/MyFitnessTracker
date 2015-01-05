@@ -10,18 +10,20 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MyFitnessTrackerWebAPI;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
     [Authorize]
-    public class ExerciseRecordsController : ApiController
+    [Helpers.AuthenticationActionFilterHelper]
+    public class ExerciseRecordsController : ControllerBase
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: api/ExerciseRecords
         public IQueryable<ExerciseRecord> GetExerciseRecords()
         {
-            return db.ExerciseRecords;
+            return db.ExerciseRecords.Where(o => o.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0);
         }
 
         // GET: api/ExerciseRecords/5
@@ -29,6 +31,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> GetExerciseRecord(long id)
         {
             ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
+            if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                exerciseRecord = null;
+
             if (exerciseRecord == null)
             {
                 return NotFound();
@@ -50,6 +55,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            if (db.Entry(exerciseRecord).Entity.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                return NotFound();
 
             db.Entry(exerciseRecord).State = EntityState.Modified;
 
@@ -92,6 +100,10 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> DeleteExerciseRecord(long id)
         {
             ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
+
+            if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                exerciseRecord = null;
+
             if (exerciseRecord == null)
             {
                 return NotFound();

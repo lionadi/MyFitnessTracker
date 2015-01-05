@@ -11,7 +11,8 @@ namespace MyFitnessTrackerWebAPI
 {
     using System;
     using System.Collections.Generic;
-    
+    using Newtonsoft.Json;
+
     public partial class Exercise
     {
         public Exercise()
@@ -24,7 +25,7 @@ namespace MyFitnessTrackerWebAPI
         public string Name { get; set; }
         public double Target { get; set; }
         public long SetId { get; set; }
-    
+    [JsonIgnore]
         public virtual Set Set { get; set; }
         public virtual ICollection<ExerciseAttribute> ExerciseAttributes { get; set; }
         public virtual ICollection<ExerciseRecord> ExerciseRecords { get; set; }

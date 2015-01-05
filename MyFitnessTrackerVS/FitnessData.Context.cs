@@ -30,5 +30,6 @@ namespace MyFitnessTrackerVS
         public virtual DbSet<ExerciseRecord> ExerciseRecords { get; set; }
         public virtual DbSet<Set> Sets { get; set; }
         public virtual DbSet<ExerciseAttribute> ExerciseAttributes { get; set; }
+        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
     }
 }

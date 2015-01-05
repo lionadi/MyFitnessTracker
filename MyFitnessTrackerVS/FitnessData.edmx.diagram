@@ -14,6 +14,8 @@
         <AssociationConnector Association="MyFitnessTrackerDBModel.FK_Exercise_Set1" ManuallyRouted="false" />
         <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise" ManuallyRouted="false" />
         <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseRecord_Exercise" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.AspNetRole" Width="1.5" PointX="0.75" PointY="8.125" />
+        <AssociationConnector Association="MyFitnessTrackerDBModel.AspNetUserRoles" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

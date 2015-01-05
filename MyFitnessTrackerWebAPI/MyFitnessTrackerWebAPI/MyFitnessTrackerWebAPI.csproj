@@ -245,6 +245,7 @@
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspNetUsersController.cs" />
+    <Compile Include="Controllers\Base\ControllerBase.cs" />
     <Compile Include="Controllers\ColumnDataHighChartController.cs" />
     <Compile Include="Controllers\ExerciseAttributesController.cs" />
     <Compile Include="Controllers\ExerciseRecordsController.cs" />
@@ -279,6 +280,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handler\AuthHandler.cs" />
+    <Compile Include="Helpers\AuthenticationActionFilterHelper.cs" />
+    <Compile Include="Helpers\UserTokenHelper.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ChartModels\ChartExercise.cs" />

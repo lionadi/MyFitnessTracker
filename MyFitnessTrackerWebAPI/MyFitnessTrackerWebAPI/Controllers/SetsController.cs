@@ -14,15 +14,17 @@ using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
-    public class SetsController : ApiController
+    [Helpers.AuthenticationActionFilterHelper]
+    [Authorize]
+    public class SetsController : ControllerBase
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: api/Sets
         public IQueryable<Set> GetSets()
         {
-            
-            return db.Sets;
+            var sets = db.Sets.Where(o => o.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0);
+            return sets;
         }
 
         // GET: api/Sets/5
@@ -30,6 +32,10 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> GetSet(long id)
         {
             Set set = await db.Sets.FindAsync(id);
+
+            if (set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                set = null;
+
             if (set == null)
             {
                 return NotFound();
@@ -51,6 +57,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            if (db.Entry(set).Entity.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                return NotFound();
 
             db.Entry(set).State = EntityState.Modified;
 
@@ -93,6 +102,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> DeleteSet(long id)
         {
             Set set = await db.Sets.FindAsync(id);
+            if (set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                set = null;
+
             if (set == null)
             {
                 return NotFound();

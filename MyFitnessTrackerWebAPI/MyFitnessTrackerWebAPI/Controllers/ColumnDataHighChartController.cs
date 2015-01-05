@@ -7,7 +7,9 @@ using System.Web.Http;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
-    public class ColumnDataHighChartController : ApiController
+    [Authorize]
+    [Helpers.AuthenticationActionFilterHelper]
+    public class ColumnDataHighChartController : ControllerBase
     {
         // GET: api/ColumnDataHighChart
         public IEnumerable<string> Get(DateTime startDate, DateTime endDate)

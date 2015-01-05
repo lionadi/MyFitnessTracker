@@ -8,124 +8,112 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyFitnessTrackerVS;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerVS.Controllers
 {
-    [Authorize]
-    [Helpers.AuthenticationActionFilterHelper]
-    public class SetsController : ControllerBase
+    [Authorize(Roles = "Admin")]
+    public class AspNetRolesController : ControllerBase
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
-        // GET: Sets
+        // GET: AspNetRoles
         public async Task<ActionResult> Index()
         {
-            var sets = db.Sets.Include(s => s.AspNetUser).Where(o => o.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0); ;
-            return View(await sets.ToListAsync());
+            return View(await db.AspNetRoles.ToListAsync());
         }
 
-        // GET: Sets/Details/5
-        public async Task<ActionResult> Details(long? id)
+        // GET: AspNetRoles/Details/5
+        public async Task<ActionResult> Details(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Set set = await db.Sets.FindAsync(id);
-            if (set == null)
+            AspNetRole aspNetRole = await db.AspNetRoles.FindAsync(id);
+            if (aspNetRole == null)
             {
                 return HttpNotFound();
             }
-            return View(set);
+            return View(aspNetRole);
         }
 
-        // GET: Sets/Create
+        // GET: AspNetRoles/Create
         public ActionResult Create()
         {
-            if (!User.IsInRole("Admin"))
-                ViewBag.UserId = new SelectList(db.AspNetUsers.Where(o => o.Id.ToLower().CompareTo(user.Id.ToLower()) == 0), "Id", "Email");
-            else
-                ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email");
-
-            var model = new Set();
-            return View(model);
+            return View();
         }
 
-        // POST: Sets/Create
+        // POST: AspNetRoles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Name,UserId")] Set set)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Name")] AspNetRole aspNetRole)
         {
             if (ModelState.IsValid)
             {
-                db.Sets.Add(set);
+                db.AspNetRoles.Add(aspNetRole);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            if (!User.IsInRole("Admin"))
-                ViewBag.UserId = new SelectList(db.AspNetUsers.Where(o => o.Id.ToLower().CompareTo(user.Id.ToLower()) == 0), "Id", "Email", set.UserId);
-            else
-                ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email", set.UserId);
-            return View(set);
+
+            return View(aspNetRole);
         }
 
-        // GET: Sets/Edit/5
-        public async Task<ActionResult> Edit(long? id)
+        // GET: AspNetRoles/Edit/5
+        public async Task<ActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Set set = await db.Sets.FindAsync(id);
-            if (set == null)
+            AspNetRole aspNetRole = await db.AspNetRoles.FindAsync(id);
+            if (aspNetRole == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email", set.UserId);
-            return View(set);
+            return View(aspNetRole);
         }
 
-        // POST: Sets/Edit/5
+        // POST: AspNetRoles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,UserId")] Set set)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name")] AspNetRole aspNetRole)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(set).State = EntityState.Modified;
+                db.Entry(aspNetRole).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.UserId = new SelectList(db.AspNetUsers, "Id", "Email", set.UserId);
-            return View(set);
+            return View(aspNetRole);
         }
 
-        // GET: Sets/Delete/5
-        public async Task<ActionResult> Delete(long? id)
+        // GET: AspNetRoles/Delete/5
+        public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Set set = await db.Sets.FindAsync(id);
-            if (set == null)
+            AspNetRole aspNetRole = await db.AspNetRoles.FindAsync(id);
+            if (aspNetRole == null)
             {
                 return HttpNotFound();
             }
-            return View(set);
+            return View(aspNetRole);
         }
 
-        // POST: Sets/Delete/5
+        // POST: AspNetRoles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(long id)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            Set set = await db.Sets.FindAsync(id);
-            db.Sets.Remove(set);
+            AspNetRole aspNetRole = await db.AspNetRoles.FindAsync(id);
+            db.AspNetRoles.Remove(aspNetRole);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

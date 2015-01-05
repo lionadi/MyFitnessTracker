@@ -17,6 +17,7 @@ namespace MyFitnessTrackerVS
         public AspNetUser()
         {
             this.Sets = new HashSet<Set>();
+            this.AspNetRoles = new HashSet<AspNetRole>();
         }
     
         public string Id { get; set; }
@@ -31,7 +32,14 @@ namespace MyFitnessTrackerVS
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
+        public string Hometown { get; set; }
     
         public virtual ICollection<Set> Sets { get; set; }
+        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
+
+        public override string ToString()
+        {
+            return (this.UserName);
+        }
     }
 }

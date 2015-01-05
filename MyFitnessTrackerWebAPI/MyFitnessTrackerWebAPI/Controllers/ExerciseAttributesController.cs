@@ -10,18 +10,20 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MyFitnessTrackerWebAPI;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
     [Authorize]
-    public class ExerciseAttributesController : ApiController
+    [Helpers.AuthenticationActionFilterHelper]
+    public class ExerciseAttributesController : ControllerBase
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: api/ExerciseAttributes
         public IQueryable<ExerciseAttribute> GetExerciseAttributes()
         {
-            return db.ExerciseAttributes;
+            return db.ExerciseAttributes.Where(o => o.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0); ;
         }
 
         // GET: api/ExerciseAttributes/5
@@ -29,6 +31,10 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> GetExerciseAttribute(long id)
         {
             ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
+
+            if (exerciseAttribute.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                exerciseAttribute = null;
+
             if (exerciseAttribute == null)
             {
                 return NotFound();
@@ -50,6 +56,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            if (db.Entry(exerciseAttribute).Entity.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                return NotFound();
 
             db.Entry(exerciseAttribute).State = EntityState.Modified;
 
@@ -92,6 +101,10 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> DeleteExerciseAttribute(long id)
         {
             ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
+
+            if (exerciseAttribute.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                exerciseAttribute = null;
+
             if (exerciseAttribute == null)
             {
                 return NotFound();

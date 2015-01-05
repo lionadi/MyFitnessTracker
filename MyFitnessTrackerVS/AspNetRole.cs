@@ -7,21 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MyFitnessTrackerWebAPI
+namespace MyFitnessTrackerVS
 {
     using System;
     using System.Collections.Generic;
-    using Newtonsoft.Json;
     
-    public partial class ExerciseRecord
+    public partial class AspNetRole
     {
-        public long Id { get; set; }
-        public double Record { get; set; }
-        public System.DateTime Date { get; set; }
-        public System.DateTime StartDate { get; set; }
-        public System.DateTime EndDate { get; set; }
-        public long ExerciseId { get; set; }
-    [JsonIgnore]
-        public virtual Exercise Exercise { get; set; }
+        public AspNetRole()
+        {
+            this.AspNetUsers = new HashSet<AspNetUser>();
+        }
+    
+        public string Id { get; set; }
+        public string Name { get; set; }
+    
+        public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
     }
 }

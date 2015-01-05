@@ -7,21 +7,28 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyFitnessTrackerVS;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerVS.Controllers
 {
     [Authorize]
-    public class AspNetUsersController : Controller
+    [Helpers.AuthenticationActionFilterHelper]
+    public class AspNetUsersController : ControllerBase
     {
+        
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: AspNetUsers
         public ActionResult Index()
         {
+            if(!User.IsInRole("Admin"))
+                return View(db.AspNetUsers.ToList().Where(o => o.Id.ToLower().CompareTo(user.Id.ToLower()) == 0));
+
             return View(db.AspNetUsers.ToList());
         }
 
         // Get the user either gui GUID ID or by email
+        [Authorize(Roles = "Admin")]
         public AspNetUser GetUser(string id)
         {
             if (id == null)
@@ -52,10 +59,16 @@ namespace MyFitnessTrackerVS.Controllers
             {
                 return HttpNotFound();
             }
+            else if (!User.IsInRole("Admin") && aspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
+            {
+                return HttpNotFound();
+            }
+
             return View(aspNetUser);
         }
 
         // GET: AspNetUsers/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -66,6 +79,7 @@ namespace MyFitnessTrackerVS.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] AspNetUser aspNetUser)
         {
             if (ModelState.IsValid)
@@ -90,6 +104,11 @@ namespace MyFitnessTrackerVS.Controllers
             {
                 return HttpNotFound();
             }
+            else if (!User.IsInRole("Admin") && aspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
+            {
+                return HttpNotFound();
+            }
+
             return View(aspNetUser);
         }
 
@@ -100,6 +119,11 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] AspNetUser aspNetUser)
         {
+            if (!User.IsInRole("Admin") && aspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
+            {
+                return HttpNotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 db.Entry(aspNetUser).State = EntityState.Modified;
@@ -110,6 +134,7 @@ namespace MyFitnessTrackerVS.Controllers
         }
 
         // GET: AspNetUsers/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(string id)
         {
             if (id == null)
@@ -127,6 +152,7 @@ namespace MyFitnessTrackerVS.Controllers
         // POST: AspNetUsers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(string id)
         {
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);

@@ -218,11 +218,16 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AspNetRole.cs">
+      <DependentUpon>FitnessData.tt</DependentUpon>
+    </Compile>
     <Compile Include="AspNetUser.cs">
       <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AspNetRolesController.cs" />
     <Compile Include="Controllers\AspNetUsersController.cs" />
+    <Compile Include="Controllers\Base\ControllerBase.cs" />
     <Compile Include="Controllers\ExerciseAttributesController.cs" />
     <Compile Include="Controllers\ExerciseRecordsController.cs" />
     <Compile Include="Controllers\ExercisesController.cs" />
@@ -256,6 +261,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AuthenticationActionFilterHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -1196,6 +1202,7 @@
     <Content Include="Theme\redmond\images\ui-icons_f9bd01_256x240.png" />
     <Content Include="Theme\redmond\jquery-ui-1.10.3.custom.css" />
     <Content Include="Theme\redmond\jquery-ui-1.10.3.custom.min.css" />
+    <Content Include="TODO.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1247,11 +1254,20 @@
     <Content Include="Views\Sets\Edit.cshtml" />
     <Content Include="Views\Sets\Index.cshtml" />
     <Content Include="Scripts\version.json" />
+    <Content Include="Views\AspNetUsers\Create.cshtml" />
+    <Content Include="Views\AspNetUsers\Delete.cshtml" />
+    <Content Include="Views\AspNetUsers\Details.cshtml" />
+    <Content Include="Views\AspNetUsers\Edit.cshtml" />
+    <Content Include="Views\AspNetUsers\Index.cshtml" />
+    <Content Include="Views\AspNetRoles\Create.cshtml" />
+    <Content Include="Views\AspNetRoles\Delete.cshtml" />
+    <Content Include="Views\AspNetRoles\Details.cshtml" />
+    <Content Include="Views\AspNetRoles\Edit.cshtml" />
+    <Content Include="Views\AspNetRoles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Globals\" />
-    <Folder Include="Views\AspNetUsers\" />
     <Folder Include="Views\ExerciseAttributes\" />
   </ItemGroup>
   <ItemGroup>

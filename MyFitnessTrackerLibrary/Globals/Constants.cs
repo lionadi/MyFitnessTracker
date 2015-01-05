@@ -7,6 +7,6 @@ namespace MyFitnessTrackerLibrary.Globals
 {
     public class Constants
     {
-        public static String Session_LogInUserID = "Cache_LogInUserID";
+        public static String Session_LogInuserId = "Cache_LogInuser.Id";
     }
 }

@@ -13,9 +13,9 @@ using MyFitnessTrackerLibrary.Globals;
 namespace MyFitnessTrackerVS.Controllers
 {
     [Authorize]
-    public class ExerciseAttributesController : Controller
+    [Helpers.AuthenticationActionFilterHelper]
+    public class ExerciseAttributesController : ControllerBase
     {
-        String userID = SessionHelper.LoggedInUser<AspNetUser>().Id;
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: ExerciseAttributes
@@ -23,7 +23,7 @@ namespace MyFitnessTrackerVS.Controllers
         {
 
             
-            var exerciseAttributes = db.ExerciseAttributes.Include(e => e.Exercise).Where(o => o.Exercise.Set.UserId.ToLower().CompareTo(userID.ToLower()) == 0);
+            var exerciseAttributes = db.ExerciseAttributes.Include(e => e.Exercise).Where(o => o.Exercise.Set.UserId.ToLower().CompareTo(user.Id.ToLower()) == 0);
             return View(await exerciseAttributes.ToListAsync());
         }
 

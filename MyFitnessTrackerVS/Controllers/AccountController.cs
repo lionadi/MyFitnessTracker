@@ -77,14 +77,16 @@ namespace MyFitnessTrackerVS.Controllers
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            
             switch (result)
             {
                 case SignInStatus.Success:
                     {
+                        //SessionHelper.UserSessionID = "TEMPSESSIONID";
                         AspNetUsersController aspUserCon = new AspNetUsersController();
                         var user = aspUserCon.GetUser(model.Email);
-                        SessionHelper.UserSessionID = user.Id;
-                        SessionHelper.LoggedInUser<AspNetUser>(user);
+                        //SessionHelper.UserSessionID = user.Id;
+                        SessionHelper.LoggedInUser<AspNetUser>(user, user.UserName);
                         return RedirectToLocal(returnUrl);
                     }
                 case SignInStatus.LockedOut:
@@ -169,7 +171,11 @@ namespace MyFitnessTrackerVS.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                    //SessionHelper.UserSessionID = "TEMPSESSIONID";
+                    AspNetUsersController aspUserCon = new AspNetUsersController();
+                    var tempUser = aspUserCon.GetUser(model.Email);
+                    //SessionHelper.UserSessionID = tempUser.Id;
+                    SessionHelper.LoggedInUser<AspNetUser>(tempUser, tempUser.UserName);
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);

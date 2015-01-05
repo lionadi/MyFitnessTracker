@@ -13,16 +13,16 @@ using MyFitnessTrackerLibrary.Globals;
 namespace MyFitnessTrackerVS.Controllers
 {
     [Authorize]
-    public class ExerciseRecordsController : Controller
+    [Helpers.AuthenticationActionFilterHelper]
+    public class ExerciseRecordsController : ControllerBase
     {
-        String userID = SessionHelper.LoggedInUser<AspNetUser>().Id;
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: ExerciseRecords
         public async Task<ActionResult> Index()
         {
             
-            var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise).Where(o => o.Exercise.Set.UserId.ToLower().CompareTo(userID.ToLower()) == 0);
+            var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise).Where(o => o.Exercise.Set.UserId.ToLower().CompareTo(user.Id.ToLower()) == 0);
             return View(await exerciseRecords.ToListAsync());
         }
 
@@ -44,7 +44,7 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: ExerciseRecords/Create
         public ActionResult Create()
         {
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name");
+            ViewBag.ExerciseId = new SelectList(db.Exercises.Where(o => o.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0), "Id", "Name");
             var model = new ExerciseRecord();
             model.Date = DateTime.Now;
             model.StartDate = DateTime.Now;
@@ -67,7 +67,7 @@ namespace MyFitnessTrackerVS.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
+            ViewBag.ExerciseId = new SelectList(db.Exercises.Where(o => o.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0), "Id", "Name", exerciseRecord.ExerciseId);
             return View(exerciseRecord);
         }
 
@@ -83,7 +83,7 @@ namespace MyFitnessTrackerVS.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
+            ViewBag.ExerciseId = new SelectList(db.Exercises.Where(o => o.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0), "Id", "Name", exerciseRecord.ExerciseId);
             return View(exerciseRecord);
         }
 
@@ -100,7 +100,7 @@ namespace MyFitnessTrackerVS.Controllers
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.ExerciseId = new SelectList(db.Exercises, "Id", "Name", exerciseRecord.ExerciseId);
+            ViewBag.ExerciseId = new SelectList(db.Exercises.Where(o => o.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0), "Id", "Name", exerciseRecord.ExerciseId);
             return View(exerciseRecord);
         }
 

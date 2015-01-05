@@ -10,18 +10,20 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MyFitnessTrackerWebAPI;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
     [Authorize]
-    public class ExercisesController : ApiController
+    [Helpers.AuthenticationActionFilterHelper]
+    public class ExercisesController : ControllerBase
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: api/Exercises
         public IQueryable<Exercise> GetExercises()
         {
-            return db.Exercises;
+            return db.Exercises.Where(o => o.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0);
         }
 
         // GET: api/Exercises/5
@@ -29,6 +31,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> GetExercise(long id)
         {
             Exercise exercise = await db.Exercises.FindAsync(id);
+            if (exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                exercise = null;
+
             if (exercise == null)
             {
                 return NotFound();
@@ -50,6 +55,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            if (db.Entry(exercise).Entity.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                return NotFound();
 
             db.Entry(exercise).State = EntityState.Modified;
 
@@ -92,6 +100,10 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> DeleteExercise(long id)
         {
             Exercise exercise = await db.Exercises.FindAsync(id);
+            
+            if (exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                exercise = null;
+
             if (exercise == null)
             {
                 return NotFound();

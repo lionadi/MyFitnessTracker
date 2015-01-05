@@ -34,5 +34,10 @@ namespace MyFitnessTrackerWebAPI
         public string Hometown { get; set; }
     
         public virtual ICollection<Set> Sets { get; set; }
+
+        public override string ToString()
+        {
+            return (this.UserName);
+        }
     }
 }

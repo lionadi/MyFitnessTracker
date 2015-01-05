@@ -1,0 +1,1 @@
+﻿Restrict user access to write and edit for only the logged in user

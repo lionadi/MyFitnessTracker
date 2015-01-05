@@ -9,20 +9,27 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MyFitnessTrackerWebAPI;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
-    public class AspNetUsersController : ApiController
+    [Authorize]
+    [Helpers.AuthenticationActionFilterHelper]
+    public class AspNetUsersController : ControllerBase
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: api/AspNetUsers
         public IQueryable<AspNetUser> GetAspNetUsers()
         {
+            if (!User.IsInRole("Admin"))
+                return db.AspNetUsers.Where(o => o.Id.ToLower().CompareTo(user.Id.ToLower()) == 0);
+
             return db.AspNetUsers;
         }
 
         // Get the user either gui GUID ID or by email
+        [Authorize(Roles = "Admin")]
         public AspNetUser GetUser(string id)
         {
             if (id == null)
@@ -46,6 +53,10 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public IHttpActionResult GetAspNetUser(string id)
         {
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
+
+            if (!User.IsInRole("Admin") && aspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
+                aspNetUser = null;
+
             if (aspNetUser == null)
             {
                 return NotFound();
@@ -67,6 +78,9 @@ namespace MyFitnessTrackerWebAPI.Controllers
             {
                 return BadRequest();
             }
+
+            if (db.Entry(aspNetUser).Entity.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+                return NotFound();
 
             db.Entry(aspNetUser).State = EntityState.Modified;
 
@@ -91,6 +105,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
 
         // POST: api/AspNetUsers
         [ResponseType(typeof(AspNetUser))]
+        [Authorize(Roles = "Admin")]
         public IHttpActionResult PostAspNetUser(AspNetUser aspNetUser)
         {
             if (!ModelState.IsValid)
@@ -121,9 +136,11 @@ namespace MyFitnessTrackerWebAPI.Controllers
 
         // DELETE: api/AspNetUsers/5
         [ResponseType(typeof(AspNetUser))]
+        [Authorize(Roles = "Admin")]
         public IHttpActionResult DeleteAspNetUser(string id)
         {
             AspNetUser aspNetUser = db.AspNetUsers.Find(id);
+
             if (aspNetUser == null)
             {
                 return NotFound();

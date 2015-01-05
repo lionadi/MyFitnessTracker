@@ -34,10 +34,11 @@ namespace MyFitnessTrackerWebAPI.Providers
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+            //SessionHelper.UserSessionID = user.Id;
             AspNetUsersController aspUserCon = new AspNetUsersController();
             var sessionUser = aspUserCon.GetUser(user.Id);
-            SessionHelper.UserSessionID = user.Id;
-            SessionHelper.LoggedInUser<AspNetUser>(sessionUser);
+            //SessionHelper.UserSessionID = user.UserName;
+            SessionHelper.LoggedInUser<AspNetUser>(sessionUser, user.UserName);
             if (user == null)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
