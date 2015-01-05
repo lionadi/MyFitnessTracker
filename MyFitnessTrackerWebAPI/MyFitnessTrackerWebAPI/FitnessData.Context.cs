@@ -29,5 +29,6 @@ namespace MyFitnessTrackerWebAPI
         public virtual DbSet<ExerciseRecord> ExerciseRecords { get; set; }
         public virtual DbSet<Set> Sets { get; set; }
         public virtual DbSet<ExerciseAttribute> ExerciseAttributes { get; set; }
+        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using System.Web.Http.OData.Builder;
 using System.Web.Http.OData.Extensions;
 using MyFitnessTrackerWebAPI;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI
 {
@@ -19,7 +20,6 @@ namespace MyFitnessTrackerWebAPI
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
-
 
             // Web API routes
             config.MapHttpAttributeRoutes();

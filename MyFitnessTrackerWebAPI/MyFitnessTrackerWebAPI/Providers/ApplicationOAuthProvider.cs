@@ -10,6 +10,8 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using MyFitnessTrackerWebAPI.Models;
+using MyFitnessTrackerWebAPI.Controllers;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Providers
 {
@@ -32,7 +34,10 @@ namespace MyFitnessTrackerWebAPI.Providers
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
-
+            AspNetUsersController aspUserCon = new AspNetUsersController();
+            var sessionUser = aspUserCon.GetUser(user.Id);
+            SessionHelper.UserSessionID = user.Id;
+            SessionHelper.LoggedInUser<AspNetUser>(sessionUser);
             if (user == null)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");

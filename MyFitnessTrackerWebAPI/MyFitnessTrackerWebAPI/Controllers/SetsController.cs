@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MyFitnessTrackerWebAPI;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
-    [Authorize]
     public class SetsController : ApiController
     {
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
@@ -21,6 +21,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         // GET: api/Sets
         public IQueryable<Set> GetSets()
         {
+            
             return db.Sets;
         }
 

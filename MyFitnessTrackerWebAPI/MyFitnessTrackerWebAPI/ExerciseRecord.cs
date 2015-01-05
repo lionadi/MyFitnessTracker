@@ -6,7 +6,7 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-using Newtonsoft.Json;
+
 namespace MyFitnessTrackerWebAPI
 {
     using System;
@@ -20,8 +20,7 @@ namespace MyFitnessTrackerWebAPI
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
         public long ExerciseId { get; set; }
-
-        [JsonIgnore] 
+    
         public virtual Exercise Exercise { get; set; }
     }
 }

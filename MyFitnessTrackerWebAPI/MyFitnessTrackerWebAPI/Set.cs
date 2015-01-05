@@ -24,5 +24,6 @@ namespace MyFitnessTrackerWebAPI
         public string UserId { get; set; }
     
         public virtual ICollection<Exercise> Exercises { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
     }
 }
