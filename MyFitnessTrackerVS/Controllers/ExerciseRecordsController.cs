@@ -8,18 +8,21 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyFitnessTrackerVS;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerVS.Controllers
 {
     [Authorize]
     public class ExerciseRecordsController : Controller
     {
+        String userID = SessionHelper.LoggedInUser<AspNetUser>().Id;
         private MyFitnessTrackerDBEntities db = new MyFitnessTrackerDBEntities();
 
         // GET: ExerciseRecords
         public async Task<ActionResult> Index()
         {
-            var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise);
+            
+            var exerciseRecords = db.ExerciseRecords.Include(e => e.Exercise).Where(o => o.Exercise.Set.UserId.ToLower().CompareTo(userID.ToLower()) == 0);
             return View(await exerciseRecords.ToListAsync());
         }
 

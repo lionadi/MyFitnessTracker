@@ -21,6 +21,7 @@ namespace MyFitnessTrackerVS.Controllers
             return View(db.AspNetUsers.ToList());
         }
 
+        // Get the user either gui GUID ID or by email
         public AspNetUser GetUser(string id)
         {
             if (id == null)

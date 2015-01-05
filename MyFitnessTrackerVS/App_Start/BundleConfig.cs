@@ -9,7 +9,9 @@ namespace MyFitnessTrackerVS
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery-{version}.js")
+                        .Include(
+                        "~/Scripts/jquery-ui-1.11.2.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -23,9 +25,27 @@ namespace MyFitnessTrackerVS
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/HighCharts").Include(
+                      "~/Scripts/highcharts.js",
+                      "~/Content/themes/HighCharts/skies.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/MyFittnessAngularMVCApp")
+                //.Include("~/Scripts/angular.js")
+                //.Include("~/Scripts/angular-route.min.js")
+                //.Include("~/Scripts/angular-local-storage.min.js")
+                //.Include("~/Scripts/loading-bar.min.js")
+                //.IncludeDirectory("~/Scripts/MyFitScripts/controllers", "*.js")
+                //.Include("~/Scripts/MyFitScripts/app.js")
+                //.IncludeDirectory("~/Scripts/MyFitScripts/services", "*.js")
+                .Include("~/Scripts/jquery.cookie.js")
+                .Include("~/Scripts/MyFitScripts/UserFitnessDataHelper.js")
+                
+                );
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/themes/flick/jquery-ui.css"));
         }
     }
 }

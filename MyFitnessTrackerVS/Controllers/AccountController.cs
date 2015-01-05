@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MyFitnessTrackerVS.Models;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerVS.Controllers
 {
@@ -82,7 +83,8 @@ namespace MyFitnessTrackerVS.Controllers
                     {
                         AspNetUsersController aspUserCon = new AspNetUsersController();
                         var user = aspUserCon.GetUser(model.Email);
-                        Globals.SessionHelper.LoggedInUser = user;
+                        SessionHelper.UserSessionID = user.Id;
+                        SessionHelper.LoggedInUser<AspNetUser>(user);
                         return RedirectToLocal(returnUrl);
                     }
                 case SignInStatus.LockedOut:
