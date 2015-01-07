@@ -79,7 +79,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
                 return BadRequest();
             }
 
-            if (db.Entry(aspNetUser).Entity.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (db.Entry(aspNetUser).Entity.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 return NotFound();
 
             db.Entry(aspNetUser).State = EntityState.Modified;

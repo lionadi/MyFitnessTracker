@@ -9,6 +9,11 @@ namespace MyFitnessTrackerWebAPI.Models.HighChartModels
 {
     public class SeriesDataHighChart
     {
+        public SeriesDataHighChart()
+        {
+            this.Data = new List<object>();
+        }
+
         [Key]
         public int ID { get; set; }
         public String Name { get; set; }

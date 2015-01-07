@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNet.Identity
 @if (Request.IsAuthenticated)
 {
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right", onclick = "LogOutUserToWebAPI()" }))
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right", onclick = "UserFitnessDataHelper.Services.authService.LogOutUserToWebAPI()" }))
     {
     @Html.AntiForgeryToken()
 

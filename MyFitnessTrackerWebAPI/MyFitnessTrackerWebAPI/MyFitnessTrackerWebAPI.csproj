@@ -250,6 +250,7 @@
     <Compile Include="Controllers\ExerciseAttributesController.cs" />
     <Compile Include="Controllers\ExerciseRecordsController.cs" />
     <Compile Include="Controllers\ExercisesController.cs" />
+    <Compile Include="Controllers\HighCharts\ChartSetController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SetsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />

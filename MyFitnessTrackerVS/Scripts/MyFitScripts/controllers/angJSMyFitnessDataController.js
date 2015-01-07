@@ -1,4 +1,4 @@
-﻿
+﻿/*
 
 var myFitnessDataController = function ($scope, authService, userFactory) {
     $scope.models = {
@@ -31,6 +31,6 @@ myFitnessDataController.$inject = ['$scope', 'authService', 'myFitnessDataFactor
 
 //// Creating a controller from the module
 //myFitnessDataApp.controller("myFitnessDataController", function ($scope) {
-//})
+//})*/
 
 

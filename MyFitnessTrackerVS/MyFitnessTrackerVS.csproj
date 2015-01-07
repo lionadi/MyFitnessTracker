@@ -1176,7 +1176,12 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\MyFitScripts\app.js" />
     <Content Include="Scripts\MyFitScripts\controllers\angJSMyFitnessDataController.js" />
+    <Content Include="Scripts\MyFitScripts\controllers\HighChartController.js" />
     <Content Include="Scripts\MyFitScripts\controllers\loginMyFitnessUser.js" />
+    <Content Include="Scripts\MyFitScripts\Helpers\Constants.js" />
+    <Content Include="Scripts\MyFitScripts\Helpers\CookieHelper.js" />
+    <Content Include="Scripts\MyFitScripts\Helpers\WebAPIHelper.js" />
+    <Content Include="Scripts\MyFitScripts\services\AuthenticationService.js" />
     <Content Include="Scripts\MyFitScripts\services\authInterceptorService.js" />
     <Content Include="Scripts\MyFitScripts\services\authService.js" />
     <Content Include="Scripts\MyFitScripts\services\tokensManagerService.js" />

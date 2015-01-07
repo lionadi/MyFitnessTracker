@@ -31,7 +31,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> GetExerciseRecord(long id)
         {
             ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
-            if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 exerciseRecord = null;
 
             if (exerciseRecord == null)
@@ -56,7 +56,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
                 return BadRequest();
             }
 
-            if (db.Entry(exerciseRecord).Entity.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (db.Entry(exerciseRecord).Entity.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 return NotFound();
 
             db.Entry(exerciseRecord).State = EntityState.Modified;
@@ -101,7 +101,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         {
             ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
 
-            if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 exerciseRecord = null;
 
             if (exerciseRecord == null)

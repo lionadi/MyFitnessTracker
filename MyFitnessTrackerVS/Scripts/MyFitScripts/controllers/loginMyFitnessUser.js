@@ -1,4 +1,4 @@
-﻿var LoginController = function ($scope, $location, authService, ngAuthSetting) {
+﻿/*var LoginController = function ($scope, $location, authService, ngAuthSetting) {
     $scope.loginData = {
         userName: "",
         password: "",
@@ -20,4 +20,4 @@
     };
 }
 
-LoginController.$inject = ['$scope', '$location', 'authService', 'ngAuthSettings'];
+LoginController.$inject = ['$scope', '$location', 'authService', 'ngAuthSettings'];*/

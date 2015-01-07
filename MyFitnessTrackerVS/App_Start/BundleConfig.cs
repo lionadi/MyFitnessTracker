@@ -34,10 +34,12 @@ namespace MyFitnessTrackerVS
                 //.Include("~/Scripts/angular-route.min.js")
                 //.Include("~/Scripts/angular-local-storage.min.js")
                 //.Include("~/Scripts/loading-bar.min.js")
-                //.IncludeDirectory("~/Scripts/MyFitScripts/controllers", "*.js")
-                //.Include("~/Scripts/MyFitScripts/app.js")
-                //.IncludeDirectory("~/Scripts/MyFitScripts/services", "*.js")
                 .Include("~/Scripts/jquery.cookie.js")
+                .IncludeDirectory("~/Scripts/MyFitScripts/Helpers", "*.js")
+                .IncludeDirectory("~/Scripts/MyFitScripts/controllers", "*.js")
+                //.Include("~/Scripts/MyFitScripts/app.js")
+                .IncludeDirectory("~/Scripts/MyFitScripts/services", "*.js")
+                
                 .Include("~/Scripts/MyFitScripts/UserFitnessDataHelper.js")
                 
                 );

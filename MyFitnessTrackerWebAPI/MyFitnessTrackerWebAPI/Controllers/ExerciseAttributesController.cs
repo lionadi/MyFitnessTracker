@@ -32,7 +32,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         {
             ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
 
-            if (exerciseAttribute.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (exerciseAttribute.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 exerciseAttribute = null;
 
             if (exerciseAttribute == null)
@@ -57,7 +57,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
                 return BadRequest();
             }
 
-            if (db.Entry(exerciseAttribute).Entity.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (db.Entry(exerciseAttribute).Entity.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 return NotFound();
 
             db.Entry(exerciseAttribute).State = EntityState.Modified;
@@ -102,7 +102,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         {
             ExerciseAttribute exerciseAttribute = await db.ExerciseAttributes.FindAsync(id);
 
-            if (exerciseAttribute.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (exerciseAttribute.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 exerciseAttribute = null;
 
             if (exerciseAttribute == null)

@@ -23,6 +23,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         // GET: api/Sets
         public IQueryable<Set> GetSets()
         {
+            
             var sets = db.Sets.Where(o => o.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0);
             return sets;
         }
@@ -31,9 +32,11 @@ namespace MyFitnessTrackerWebAPI.Controllers
         [ResponseType(typeof(Set))]
         public async Task<IHttpActionResult> GetSet(long id)
         {
+            HighCharts.ChartSetController csc = new HighCharts.ChartSetController();
+            var s = csc.Get(DateTime.Now.Subtract(new TimeSpan(60, 0, 0, 0)), DateTime.Now);
             Set set = await db.Sets.FindAsync(id);
 
-            if (set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 set = null;
 
             if (set == null)
@@ -58,7 +61,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
                 return BadRequest();
             }
 
-            if (db.Entry(set).Entity.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (db.Entry(set).Entity.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 return NotFound();
 
             db.Entry(set).State = EntityState.Modified;
@@ -102,7 +105,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         public async Task<IHttpActionResult> DeleteSet(long id)
         {
             Set set = await db.Sets.FindAsync(id);
-            if (set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0)
+            if (set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)
                 set = null;
 
             if (set == null)
