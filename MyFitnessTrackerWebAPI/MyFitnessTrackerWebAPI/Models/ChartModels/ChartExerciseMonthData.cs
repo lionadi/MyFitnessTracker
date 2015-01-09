@@ -12,7 +12,7 @@ namespace MyFitnessTrackerWebAPI.Models.ChartModels
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public float MonthRecordAverage { get; set; }
+        public double MonthRecordAverage { get; set; }
         public int ActivityCount { get; set; }
     }
 }

@@ -206,6 +206,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_GlobalResources\ChartsTranslations.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ChartsTranslations.resx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -251,6 +256,7 @@
     <Compile Include="Controllers\ExerciseRecordsController.cs" />
     <Compile Include="Controllers\ExercisesController.cs" />
     <Compile Include="Controllers\HighCharts\ChartSetController.cs" />
+    <Compile Include="Controllers\HighCharts\ChartsHelper.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SetsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -286,6 +292,8 @@
     <Compile Include="Helpers\UserTokenHelper.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ChartModels\ChartDataContainer.cs" />
+    <Compile Include="Models\ChartModels\ChartDateRange.cs" />
     <Compile Include="Models\ChartModels\ChartExercise.cs" />
     <Compile Include="Models\ChartModels\ChartExerciseMonthData.cs" />
     <Compile Include="Models\ChartModels\ChartExerciseRecord.cs" />
@@ -350,6 +358,8 @@
       <DependentUpon>FitnessData.edmx</DependentUpon>
       <LastGenOutput>FitnessData.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\ChartModels\ChartsClassDiagram.cd" />
+    <Content Include="Models\HighChartModels\HighChartsClassDiagram.cd" />
     <None Include="Properties\PublishProfiles\MyFitnessTrackerWebAPI.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -398,6 +408,12 @@
       <Project>{46f485e3-f9bc-4b08-a9c8-018015507a2e}</Project>
       <Name>MyFitnessTrackerLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\ChartsTranslations.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <LastGenOutput>ChartsTranslations.Designer.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

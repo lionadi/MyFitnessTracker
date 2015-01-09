@@ -27,7 +27,7 @@ namespace MyFitnessTrackerVS
 
             bundles.Add(new ScriptBundle("~/bundles/HighCharts").Include(
                       "~/Scripts/highcharts.js",
-                      "~/Content/themes/HighCharts/skies.js"));
+                      "~/Content/themes/HighCharts/grid-light.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/MyFittnessAngularMVCApp")
                 //.Include("~/Scripts/angular.js")

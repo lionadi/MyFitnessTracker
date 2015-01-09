@@ -25,15 +25,5 @@ namespace MyFitnessTrackerWebAPI.Controllers
                 return (null);
             }
         }
-
-        protected override void Initialize(System.Web.Http.Controllers.HttpControllerContext controllerContext)
-        {
-            base.Initialize(controllerContext);
-        }
-
-        public override System.Threading.Tasks.Task<HttpResponseMessage> ExecuteAsync(System.Web.Http.Controllers.HttpControllerContext controllerContext, System.Threading.CancellationToken cancellationToken)
-        {
-            return base.ExecuteAsync(controllerContext, cancellationToken);
-        }
     }
 }

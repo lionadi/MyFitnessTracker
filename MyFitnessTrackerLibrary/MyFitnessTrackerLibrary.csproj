@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Globals\Constants.cs" />
+    <Compile Include="Globals\DateTimeExtensions.cs" />
     <Compile Include="Globals\LambdaExtensions.cs" />
     <Compile Include="Globals\SessionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

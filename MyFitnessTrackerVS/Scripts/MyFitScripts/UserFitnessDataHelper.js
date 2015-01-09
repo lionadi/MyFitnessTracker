@@ -1,20 +1,29 @@
 ﻿
 var UserFitnessDataHelper =
     {
+        IsUserLoggedOn : function()
+        {
+            if (!Tools.IsEmpty(CookieHelper.LoginToken) && !Tools.IsEmpty(CookieHelper.LoginTokenType))
+                return true;
+
+            return false;
+        },
         Services: { authService : authenticationService },
         Controllers: { hsController: highChartsController },
         SetupUserFitnessApp: function()
         {
             UserFitnessDataHelper.SetupHTMLControlsSettings();
-            UserFitnessDataHelper.Controllers.hsController.LoadUserSets();
+            UserFitnessDataHelper.Controllers.hsController.SetupHighChartsOperations();
         },
         SetupHTMLControlsSettings: function ()
         {
             // DateTimePickers
             //------------------------------------------------
-            $('.datepicker').datepicker(); //Initialise any date pickers with CSS class datepicker
-            $("#exerciseStartDatepicker").datepicker();
-            $("#exerciseEndDatepicker").datepicker();
+            $('.datepicker').datepicker({
+                dateFormat: Tools.DateTimeFormat
+            }); //Initialise any date pickers with CSS class datepicker
+            $('#userFitnessData').toggle("fast");
+            $('#userNoLogOn').toggle("fast");
 
             // Charts initializations
             //------------------------------------------------
@@ -54,7 +63,17 @@ var UserFitnessDataHelper =
 
 
 $(document).ready(function () {
-    UserFitnessDataHelper.SetupUserFitnessApp();
+    $('#userFitnessData').hide();
+    $('#userNoLogOn').show();
+
+    // Perform any loading data when the user has logged in
+    if (UserFitnessDataHelper.IsUserLoggedOn()) {
+        UserFitnessDataHelper.SetupUserFitnessApp();
+    }
+    else {
+        $('#userFitnessData').toggle("fast");
+        $('#userNoLogOn').toggle("fast");
+    }
     
     
     
