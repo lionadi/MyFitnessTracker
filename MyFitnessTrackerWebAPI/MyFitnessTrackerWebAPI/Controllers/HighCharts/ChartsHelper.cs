@@ -41,9 +41,11 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
                 {
                     ActivityCount = set.Exercises.Where(o => o.ExerciseRecords.Any(m => m.Date.Month == month)).Count(),
                     StartDate = DateTime.Now.StartOfMonth(month),
-                    EndDate = DateTime.Now.EndOfMonth(month)
+                    EndDate = DateTime.Now.EndOfMonth(month),
+                    MonthNumber = month
                 });
             }
+            //chartSet.ChartSetMonthsData.OrderBy(o => o.MonthNumber);
             //#######################################################################
 
             //#######################################################################
@@ -59,10 +61,11 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
                 {
                     ActivityCount = set.Exercises.Where(o => o.ExerciseRecords.Any(m => m.Date.WeekOfDate() == week)).Count(),
                     StartDate = DateTimeExtensions.StartOfWeekNumber(er != null ? er.Date.Year : DateTime.Now.Year, week),
-                    EndDate = DateTimeExtensions.EndOfWeekNumber(er != null ? er.Date.Year : DateTime.Now.Year, week)
+                    EndDate = DateTimeExtensions.EndOfWeekNumber(er != null ? er.Date.Year : DateTime.Now.Year, week),
+                    WeekNumber = week
                 });
             }
-
+            //chartSet.ChartSetWeeksData.OrderBy(o => o.WeekNumber);
             chartSet.TotalActivityCount = chartSet.ChartSetMonthsData.Sum(ac => ac.ActivityCount);
             //#######################################################################
 
@@ -92,12 +95,11 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
             //#######################################################################
             // Start Building the exercise month statistics (NOTICE: that the calculation is intended to calculate by aggregating all activities by month regardless of the year the month belongs to)
             //#######################################################################
-            chartExercise.ChatMonthsData = new List<ChartExerciseMonthData>();
+            chartExercise.ChartMonthsData = new List<ChartExerciseMonthData>();
             
             foreach (var month in monthsInSetsData)
             {
-                var y = exercise.ExerciseRecords.Where(m => m.Date.Month == month).Count();
-                chartExercise.ChatMonthsData.Add(new ChartExerciseMonthData
+                chartExercise.ChartMonthsData.Add(new ChartExerciseMonthData
                 {
                     ActivityCount = exercise.ExerciseRecords.Where(m => m.Date.Month == month).Count(),
                     StartDate = DateTime.Now.StartOfMonth(month),
@@ -109,9 +111,11 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
                         averageRecord = exerciseRecordByDateRange.Average(a => a.Record);
 
                     return (averageRecord);
-                    })()
+                    })(),
+                    MonthNumber = month
                 });
             }
+            //chartExercise.ChartMonthsData.OrderBy(o => o.MonthNumber);
             //#######################################################################
 
             //#######################################################################
@@ -134,10 +138,12 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
                         averageRecord = exerciseRecordByDateRange.Average(a => a.Record);
 
                     return (averageRecord);
-                    })()
+                    })(),
+                    WeekNumber = week
                 });
             }
-            chartExercise.TotalActivityCount = chartExercise.ChatMonthsData.Sum(ac => ac.ActivityCount);
+            //chartExercise.ChartWeeksData.OrderBy(o => o.WeekNumber);
+            chartExercise.TotalActivityCount = chartExercise.ChartMonthsData.Sum(ac => ac.ActivityCount);
             chartExercise.TotalRecordAverage = new Func<double>(() => {
                     double averageRecord = 0;
                     var exerciseRecordByDateRange = exercise.ExerciseRecords.Where(m => m.Date >= startDate && m.Date <= endDate);
@@ -155,6 +161,7 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
                 ChartExerciseRecord chartExerciseRecord = ChartsHelper.PopulateChartExerciseRecord(exerciseRecord, monthsInSetsData, weeksInSetsData, startDate, endDate);
                 chartExercise.ChartExerciseRecords.Add(chartExerciseRecord);
             }
+            //chartExercise.ChartExerciseRecords.OrderBy(o => o.Date);
             //#######################################################################
             return (chartExercise);
         }

@@ -14,5 +14,6 @@ namespace MyFitnessTrackerWebAPI.Models.ChartModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int ActivityCount { get; set; }
+        public int WeekNumber { get; set; }
     }
 }

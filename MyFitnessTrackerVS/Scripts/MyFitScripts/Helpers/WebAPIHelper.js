@@ -1,7 +1,7 @@
 ﻿var WebAPIHelper = {
     Get: function (getWebAPIFunctionPath, successEventFunction, errorEventFunction) {
-        if ((CookieHelper.LoginToken === null) != true && (typeof CookieHelper.LoginToken === 'undefined') != true) {
-            if ((CookieHelper.LoginTokenType === null) != true && (typeof CookieHelper.LoginTokenType === 'undefined') != true) {
+        if (!Tools.IsEmpty(CookieHelper.LoginToken === null)) {
+            if (!Tools.IsEmpty(CookieHelper.LoginTokenType === null)) {
                 $.ajax({
                     beforeSend: function (request) {
                         request.setRequestHeader("Accept", 'application/json');
@@ -11,14 +11,16 @@
                     dataType: "json",
                     url: Constants.WebAPILocation + getWebAPIFunctionPath,
                     success: successEventFunction,
-                    error: errorEventFunction
+                    error: !Tools.IsEmpty(errorEventFunction) ? errorEventFunction : function (jqXHR, textStatus, errorThrown) {
+                        var x = 0;
+                    }
                 });
             }
         }
     },
     Get: function (getWebAPIFunctionPath, successEventFunction, errorEventFunction, getCallData) {
-        if ((CookieHelper.LoginToken === null) != true && (typeof CookieHelper.LoginToken === 'undefined') != true) {
-            if ((CookieHelper.LoginTokenType === null) != true && (typeof CookieHelper.LoginTokenType === 'undefined') != true) {
+        if (!Tools.IsEmpty(CookieHelper.LoginToken === null)) {
+            if (!Tools.IsEmpty(CookieHelper.LoginTokenType === null)) {
                 $.ajax({
                     beforeSend: function (request) {
                         request.setRequestHeader("Accept", 'application/json');
@@ -29,7 +31,9 @@
                     data: getCallData,
                     url: Constants.WebAPILocation + getWebAPIFunctionPath,
                     success: successEventFunction,
-                    error: errorEventFunction
+                    error: !Tools.IsEmpty(errorEventFunction) ? errorEventFunction : function (jqXHR, textStatus, errorThrown) {
+                        var x = 0;
+                    }
                 });
             }
         }

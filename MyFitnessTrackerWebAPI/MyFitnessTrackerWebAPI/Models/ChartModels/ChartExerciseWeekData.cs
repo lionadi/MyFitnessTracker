@@ -14,5 +14,6 @@ namespace MyFitnessTrackerWebAPI.Models.ChartModels
         public DateTime EndDate { get; set; }
         public double WeekRecordAverage { get; set; }
         public int ActivityCount { get; set; }
+        public int WeekNumber { get; set; }
     }
 }

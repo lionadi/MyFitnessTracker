@@ -12,8 +12,16 @@ var UserFitnessDataHelper =
         Controllers: { hsController: highChartsController },
         SetupUserFitnessApp: function()
         {
+            UserFitnessDataHelper.GetServerStatus();
             UserFitnessDataHelper.SetupHTMLControlsSettings();
-            UserFitnessDataHelper.Controllers.hsController.SetupHighChartsOperations();
+            
+        },
+        GetServerStatus : function()
+        {
+            WebAPIHelper.Get("/api/ServerStatus",
+                            function (data) {
+                                $.cookie(Constants.CookieID_ServerLanguage, data.LanguageCode, { path: "/" });
+                            }, null);
         },
         SetupHTMLControlsSettings: function ()
         {
@@ -27,27 +35,7 @@ var UserFitnessDataHelper =
 
             // Charts initializations
             //------------------------------------------------
-            this.Controllers.hsController.GetAndSteupHighChartsBaseOptions();
-
-            // Sets and Exercise drop down selectors initializations
-            //------------------------------------------------
-
-            // You can only load excercises if the user has selected a set
-            $('#userSets').change(function () {
-                $("select option:selected").each(function () {
-                    if (($(this).val() === null) != true && (typeof $(this).val() === 'undefined') != true && $(this).val()) {
-                        UserFitnessDataHelper.Controllers.hsController.LoadUserExercises($(this).val());
-                    }
-                });
-            });
-
-            $('#userExercises').change(function () {
-                $("select option:selected").each(function () {
-                    if (($(this).val() === null) != true && (typeof $(this).val() === 'undefined') != true && $(this).val()) {
-                        UserFitnessDataHelper.Controllers.hsController.LoadUserExercises($(this).val());
-                    }
-                });
-            });
+            UserFitnessDataHelper.Controllers.hsController.SetupHighChartsOperations();
         }  
     };
 

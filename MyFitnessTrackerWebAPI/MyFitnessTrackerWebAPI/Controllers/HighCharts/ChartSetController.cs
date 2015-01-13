@@ -41,8 +41,8 @@ namespace MyFitnessTrackerWebAPI.Controllers.HighCharts
             var setsData = exerciseRecordsData.DistinctBy(o => o.Exercise.SetId).Select( o => o.Exercise.Set);
 
             // We do these steps to narrow down the calculations to actual existing data based on submitted dates
-            var monthsInSetsData = exerciseRecordsData.DistinctBy(m => m.Date.Month).Select(ms => ms.Date.Month);
-            var weeksInSetsData = exerciseRecordsData.DistinctBy(m => m.Date.WeekOfDate()).Select(ms => ms.Date.WeekOfDate());
+            var monthsInSetsData = exerciseRecordsData.DistinctBy(m => m.Date.Month).Select(ms => ms.Date.Month).OrderBy(o => o);
+            var weeksInSetsData = exerciseRecordsData.DistinctBy(m => m.Date.WeekOfDate()).Select(ms => ms.Date.WeekOfDate()).OrderBy(o => o);
 
             chartDataContainer.MonthsInSets = new Dictionary<int, String>();
             foreach (var month in monthsInSetsData)

@@ -61,6 +61,24 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Week .
+        /// </summary>
+        internal static string HighCharts_ColumnChartExerciseWeekTitle {
+            get {
+                return ResourceManager.GetString("HighCharts_ColumnChartExerciseWeekTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your activity records.
+        /// </summary>
+        internal static string HighCharts_ColumnChartExerciseYAxisTitle {
+            get {
+                return ResourceManager.GetString("HighCharts_ColumnChartExerciseYAxisTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your monthly stats!.
         /// </summary>
         internal static string HighCharts_ColumnChartSubTitle {
@@ -84,6 +102,24 @@ namespace Resources {
         internal static string HighCharts_ColumnChartyAxisTitle {
             get {
                 return ResourceManager.GetString("HighCharts_ColumnChartyAxisTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your exercise activity.
+        /// </summary>
+        internal static string HighCharts_ColumnCharty_ExerciseTitle {
+            get {
+                return ResourceManager.GetString("HighCharts_ColumnCharty_ExerciseTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your set activity.
+        /// </summary>
+        internal static string HighCharts_ColumnCharty_SetTitle {
+            get {
+                return ResourceManager.GetString("HighCharts_ColumnCharty_SetTitle", resourceCulture);
             }
         }
     }

@@ -15,7 +15,7 @@ namespace MyFitnessTrackerWebAPI.Models.ChartModels
         public float TotalActivityCount { get; set; }
         public float Target { get; set; }
         public IList<ChartExerciseWeekData> ChartWeeksData { get; set; }
-        public IList<ChartExerciseMonthData> ChatMonthsData { get; set; }
+        public IList<ChartExerciseMonthData> ChartMonthsData { get; set; }
         public IList<ChartExerciseRecord> ChartExerciseRecords { get; set; }
     }
 }
