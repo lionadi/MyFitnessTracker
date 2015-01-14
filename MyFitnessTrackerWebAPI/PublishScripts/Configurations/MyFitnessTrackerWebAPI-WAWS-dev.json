@@ -7,7 +7,7 @@
         "databases": [
             {
                 "connectionStringName": "DefaultConnection",
-                "databaseName": "MyFitnessTrackerWebAPI_db",
+                "databaseName": "MyFitnessTrackerVS_db",
                 "serverName": "wlmk0i9kra",
                 "user": "admin82",
                 "password": "",

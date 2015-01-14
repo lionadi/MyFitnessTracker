@@ -158,6 +158,8 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            // Disable this if you want more users in AZURE
+            return HttpNotFound();
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };

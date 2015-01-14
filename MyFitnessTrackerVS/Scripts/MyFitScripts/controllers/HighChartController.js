@@ -1,7 +1,9 @@
 ﻿var highChartsController = {
     Chart: null,
     ChartOptions: null,
-    UserOverallDataByDateRange : [],
+    UserOverallDataByDateRange: [],
+    DataDateRange: { StartDate: null, EndDate: null },
+    ResetCalled : false,
     SetupHighChartsOperations : function()
     {
         highChartsController.ChartOptions = this.GetAndSteupHighChartsBaseOptions();
@@ -41,11 +43,28 @@
 
         //------------------------------------------------
 
+        
+
+        $("#fitnessDataDateRangeSlider").bind("valuesChanged", function (e, data) {
+            if (highChartsController.ResetCalled)
+            {
+                highChartsController.ResetCalled = false;
+                return;
+            }
+            $("#exerciseStartDatepicker").val($.datepicker.formatDate("DD, d M yy", new Date(data.values.min)));
+            $("#exerciseEndDatepicker").val($.datepicker.formatDate("DD, d M yy", new Date(data.values.max)));
+            highChartsController.LoadProperChartByUserSelection();
+        });
+
         $("#exerciseStartDatepicker").datepicker({
             dateFormat: Tools.DateTimeFormat,
             onSelect: function (dateText, inst) {
                 //var date = $.datepicker.parseDate(inst.settings.dateFormat || $.datepicker._defaults.dateFormat, dateText, inst.settings);
                 highChartsController.LoadProperChartByUserSelection();
+                highChartsController.ResetCalled = true;
+                var uiStartDate = new Date($("#exerciseStartDatepicker").val());
+                var uiEndDate = new Date($("#exerciseEndDatepicker").val());
+                $("#fitnessDataDateRangeSlider").dateRangeSlider("values", uiStartDate, uiEndDate);
             }
         });
 
@@ -54,15 +73,49 @@
             onSelect: function (dateText, inst) {
                 //var date = $.datepicker.parseDate(inst.settings.dateFormat || $.datepicker._defaults.dateFormat, dateText, inst.settings);
                 highChartsController.LoadProperChartByUserSelection();
+                highChartsController.ResetCalled = true;
+                var uiStartDate = new Date($("#exerciseStartDatepicker").val());
+                var uiEndDate = new Date($("#exerciseEndDatepicker").val());
+                $("#fitnessDataDateRangeSlider").dateRangeSlider("values", uiStartDate, uiEndDate);
             }
+        });
+
+        $("#resetChartSelections").click(function () {
+            $("#exerciseStartDatepicker").val($.datepicker.formatDate("DD, d M yy", highChartsController.DataDateRange.StartDate));
+            $("#exerciseEndDatepicker").val($.datepicker.formatDate("DD, d M yy", highChartsController.DataDateRange.EndDate));
+            $("#fitnessDataDateRangeSlider").dateRangeSlider("values", highChartsController.DataDateRange.StartDate, highChartsController.DataDateRange.EndDate);
+            $("#userExercises").val("none");
+            $("#userSets").val("none");
+            $("#chartTypes").val("none");
+            highChartsController.LoadProperChartByUserSelection();
+            highChartsController.ResetCalled = true;
         });
 
         WebAPIHelper.Get("/api/ChartSet",
                             function (data) {
                                 $("#exerciseStartDatepicker").val($.datepicker.formatDate("DD, d M yy", new Date(data.StartDate)));
                                 $("#exerciseEndDatepicker").val($.datepicker.formatDate("DD, d M yy", new Date(data.EndDate)));
+                                highChartsController.DataDateRange.StartDate = new Date(data.StartDate);
+                                highChartsController.DataDateRange.EndDate = new Date(data.EndDate);
                                 highChartsController.LoadProperChartByUserSelection();
+
+                                $("#fitnessDataDateRangeSlider").dateRangeSlider({
+                                    bounds: { min: highChartsController.DataDateRange.StartDate, max: highChartsController.DataDateRange.EndDate },
+                                    defaultValues: { min: highChartsController.DataDateRange.StartDate, max: highChartsController.DataDateRange.EndDate },
+                                    formatter: function (val) {
+                                        return $.datepicker.formatDate("DD, d M yy", new Date(val));
+                                    }
+                                });
                             }, null);
+        /*
+        TODO: Incorporate ajaxcomplete for webapi complete requests:
+        $( document ).ajaxComplete(function() {
+  $( ".log" ).text( "Triggered ajaxComplete handler." );
+});
+
+Improving code logic
+        */
+
         
     },
     LoadProperChartByUserSelection : function ()
@@ -98,6 +151,11 @@
                                     highChartsController.Chart.destroy();
                                     return;
                                 }
+                                if (highChartsController.ChartOptions != null) {
+
+                                    highChartsController.ChartOptions.series = [];
+                                }
+
                                 if (setsData.Series.length > 0) {
                                     $.each(setsData.Series, function (index, item) {
                                         highChartsController.ChartOptions.series.push({
@@ -141,6 +199,15 @@
         WebAPIHelper.Get("/api/ColumnDataHighChart",
                             function (setsData) {
                                 //highChartsController.UserOverallDataByDateRange = setsData;
+                                if (setsData.Series.length <= 0) {
+                                    highChartsController.Chart.destroy();
+                                    return;
+                                }
+
+                                if (highChartsController.ChartOptions != null) {
+
+                                    highChartsController.ChartOptions.series = [];
+                                }
 
                                 $.each(setsData.Series, function (index, item) {
                                     highChartsController.ChartOptions.series.push({
@@ -180,7 +247,14 @@
         WebAPIHelper.Get("/api/ColumnDataHighChart",
                             function (setsData) {
                                 //highChartsController.UserOverallDataByDateRange = setsData;
-                                
+                                if (setsData.Series.length <= 0) {
+                                    highChartsController.Chart.destroy();
+                                    return;
+                                }
+                                if (highChartsController.ChartOptions != null) {
+
+                                    highChartsController.ChartOptions.series = [];
+                                }
                                 $.each(setsData.Series, function (index, item) {
                                     highChartsController.ChartOptions.series.push({
                                         name: item.Name,

@@ -45,12 +45,32 @@ var UserFitnessDataHelper =
 
 
 
-
+$(document).ajaxError(function (event, jqxhr, settings, thrownError) {
+    var t = 0;
+});
 
 
 
 
 $(document).ready(function () {
+    //var password ="Qwerty123!";
+    //var userName = "demo@account.com";
+    //$.ajax({
+    //    url: Constants.WebAPILocation + "/Token",
+    //    type: "Post",
+    //    data: "grant_type=password&password=" + encodeURI(password) + "&username=" + encodeURI(userName),
+    //    success: function (data) {
+    //        loginToken = data;
+            
+
+    //        $.cookie(Constants.CookieID_loginTokenData, data.access_token, { path: "/" });
+    //        $.cookie(Constants.CookieID_loginTokenType, data.token_type, { path: "/" });
+    //    },
+    //    error: function (jqXHR, textStatus, errorThrown) {
+    //        var x = 0;
+
+    //    }
+    //});
     $('#userFitnessData').hide();
     $('#userNoLogOn').show();
 

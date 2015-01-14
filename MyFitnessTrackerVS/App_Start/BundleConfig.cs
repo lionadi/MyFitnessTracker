@@ -35,6 +35,7 @@ namespace MyFitnessTrackerVS
                 //.Include("~/Scripts/angular-local-storage.min.js")
                 //.Include("~/Scripts/loading-bar.min.js")
                 .Include("~/Scripts/jquery.cookie.js")
+                .Include("~/Scripts/jQAllRangeSliders-min.js")
                 .IncludeDirectory("~/Scripts/MyFitScripts/Helpers", "*.js")
                 .IncludeDirectory("~/Scripts/MyFitScripts/controllers", "*.js")
                 //.Include("~/Scripts/MyFitScripts/app.js")
@@ -47,7 +48,8 @@ namespace MyFitnessTrackerVS
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
-                      "~/Content/themes/flick/jquery-ui.css"));
+                      "~/Content/themes/flick/jquery-ui.css",
+                      "~/Content/JQRangeSlider/iThing-min.css"));
         }
     }
 }

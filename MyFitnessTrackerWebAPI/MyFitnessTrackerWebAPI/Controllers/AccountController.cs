@@ -323,6 +323,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         [Route("Register")]
         public async Task<IHttpActionResult> Register(RegisterBindingModel model)
         {
+            return NotFound();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -346,6 +347,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
         [Route("RegisterExternal")]
         public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
         {
+            return NotFound();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

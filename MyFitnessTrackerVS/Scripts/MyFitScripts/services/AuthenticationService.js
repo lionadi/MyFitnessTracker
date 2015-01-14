@@ -1,5 +1,6 @@
 ﻿var authenticationService = {
     LoginUserToWebAPI: function () {
+        
         var password = $("#Password").val();
         var userName = $("#Email").val();
         $.ajax({
@@ -15,6 +16,7 @@
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 var x = 0;
+                
             }
         });
     },
