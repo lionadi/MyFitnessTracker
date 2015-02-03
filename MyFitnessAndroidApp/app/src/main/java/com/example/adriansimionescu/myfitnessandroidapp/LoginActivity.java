@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,12 +29,129 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import 	java.io.UnsupportedEncodingException;
+import org.apache.http.client.ClientProtocolException;
+import 	java.io.IOException;
+
+import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
+
+    public void GetLoginToken(String URL, String password, String userName)
+    {
+        // Creating HTTP client
+        HttpClient httpClient = new DefaultHttpClient();
+        // Creating HTTP Post
+        HttpPost httpPost = new HttpPost(
+                URL);
+
+        // Building post parameters
+        // key and value pair
+        List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(2);
+        nameValuePair.add(new BasicNameValuePair("grant_type", "password"));
+        nameValuePair.add(new BasicNameValuePair("password", password));
+        nameValuePair.add(new BasicNameValuePair("username", userName));
+
+        // Url Encoding the POST parameters
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
+        } catch (UnsupportedEncodingException e) {
+            // writing error to Log
+            e.printStackTrace();
+        }
+
+        // Making HTTP Request
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            InputStream inputStream = entity.getContent();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            inputStream.close();
+            JSONObject jObj = new JSONObject(stringBuilder.toString());
+            String userToken = jObj.getString("access_token");
+
+            UserLoginData userLoginData = new UserLoginData();
+            userLoginData.access_token = jObj.getString("access_token");
+            userLoginData.expires_in = jObj.getString("expires_in");
+            userLoginData.userName = jObj.getString("userName");
+            userLoginData.issued = jObj.getString(".issued");
+            userLoginData.expires = jObj.getString(".expires");
+            userLoginData.token_type = jObj.getString("token_type");
+            DeviceDataStorage.SerializeObjectToDeviceStorage(userLoginData, Constants.UserLoginData_FileName);
+
+            // writing response to log
+            Log.d("Http Response:", response.toString());
+        } catch (ClientProtocolException e) {
+            // writing exception to log
+            e.printStackTrace();
+        } catch (IOException e) {
+            // writing exception to log
+            e.printStackTrace();
+
+        } catch (JSONException e) {
+
+        }
+
+    }
+
+    public String readJSONFeed(String URL) {
+        StringBuilder stringBuilder = new StringBuilder();
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(URL);
+        try {
+            HttpResponse response = httpClient.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream inputStream = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(inputStream));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                inputStream.close();
+            } else {
+                Log.d("JSON", "Failed to download file");
+            }
+        } catch (Exception e) {
+            Log.d("readJSONFeed", e.getLocalizedMessage());
+        }
+        return stringBuilder.toString();
+    }
+
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -106,8 +224,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String email = mEmailView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -139,8 +257,33 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            //mAuthTask = new UserLoginTask(email, password);
+            //mAuthTask.execute((Void) null);
+            //new ReadJSONFeedTask().execute("http://myfitnesstrackerwebapi.azurewebsites.net/token");
+
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    if(UserDataContainer.LoginData == null) {
+                        GetLoginToken("http://myfitnesstrackerwebapi.azurewebsites.net/token", password, email);
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void none) {
+                    // Notifies UI when the task is done
+                    UserDataContainer.LoginData = DeviceDataStorage.DeSerializeObjectToDeviceStorage(Constants.UserLoginData_FileName);
+                    if(UserDataContainer.LoginData != null) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        showProgress(false);
+                    }
+                }
+            }.execute();
+
         }
     }
 
