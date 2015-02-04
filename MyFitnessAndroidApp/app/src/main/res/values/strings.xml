@@ -2,10 +2,16 @@
 <resources>
 
     <string name="app_name">MyFitnessAndroidApp</string>
+    <string name="SingleRecord">Single record</string>
+    <string name="Timer">Timer</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="AddExerciseRecord">Save Activity</string>
     <string name="ExerciseManagement">Add a new exercise record:</string>
+    <string name="WelcomeText">Welcome to your fitness tracker!</string>
+    <string name="Start" >Start</string>
+    <string name="Stop" >Stop</string>
+
 
 </resources>

@@ -266,7 +266,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 @Override
                 protected Void doInBackground(Void... params) {
                     if(UserDataContainer.LoginData == null) {
-                        GetLoginToken("http://myfitnesstrackerwebapi.azurewebsites.net/token", password, email);
+                        GetLoginToken(Constants.WebServiceLocation + "/token", password, email);
                     }
 
                     return null;
