@@ -2,12 +2,15 @@ package com.example.adriansimionescu.myfitnessandroidapp;
 
 import android.util.Log;
 
+import com.google.gson.GsonBuilder;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -53,5 +56,10 @@ public class WebApiHelper {
         }
 
         return (body.toString());
+    }
+
+    public static void PostAsJSON()
+    {
+
     }
 }
