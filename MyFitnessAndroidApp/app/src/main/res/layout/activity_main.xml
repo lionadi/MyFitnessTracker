@@ -5,83 +5,113 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.adriansimionescu.myfitnessandroidapp.MainActivity"
-    android:background="@drawable/mountain"
+    android:background="@drawable/endlessrunning"
     android:scaleType = "centerCrop">
+
+    <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" android:visibility="gone" />
 
     <TextView android:text="@string/ExerciseManagement" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
         android:textSize="25dp"
-        android:textColor="#ffffffff" />
+        android:textColor="#ECF3F9"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sSets"
-        android:layout_below="@+id/textView"
+        android:textColor="#ffffff"
+        android:layout_above="@+id/sExercises"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="28dp"
-        android:textColor="#ffffff"/>
+        android:layout_marginBottom="34dp" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sExercises"
-        android:layout_below="@+id/sSets"
-        android:layout_alignParentStart="true" />
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/login_progress" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberSigned"
         android:ems="10"
-        android:id="@+id/editText"
-        android:layout_below="@+id/sExercises"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="46dp"
-        android:layout_alignParentEnd="true" />
+        android:id="@+id/etActivityStatusInfo"
+        android:textColor="#ECF3F9"
+        android:visibility="visible"
+        android:hint="@string/ActivityRecordTextBoxHintMessage"
+        android:textColorHint="#beffffff"
+        android:layout_alignBottom="@+id/chronometer"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/AddExerciseRecord"
-        android:id="@+id/button"
-        android:layout_below="@+id/editText"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="39dp"
+        android:id="@+id/bActivityAction"
         android:background="@android:color/transparent"
-        android:textColor="#ff00004c" />
+        android:textColor="#ECF3F9"
+        android:textStyle="bold"
+        android:visibility="visible"
+        android:layout_below="@+id/etActivityStatusInfo"
+        android:layout_alignParentEnd="true" />
 
     <RadioGroup
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentStart="true"
         android:checkedButton="@+id/SingleRecord"
-        android:layout_below="@+id/button">
+        android:layout_below="@+id/bActivityAction"
+        android:id="@+id/radioGroup"
+        android:layout_centerVertical="true"
+        android:visibility="visible">
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/SingleRecord"
             android:text="@string/SingleRecord"
-            android:textColor="#ffffff"/>
+            android:textColor="#ECF3F9"
+            android:textStyle="bold|italic" />
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/Timer"
             android:text="@string/Timer"
-            android:textColor="#ffffff"/>
-        </RadioGroup>
+            android:textColor="#ECF3F9"
+            android:textStyle="bold|italic" />
+    </RadioGroup>
 
-    <Button
+    <Chronometer
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Start"
-        android:id="@+id/button2"
-        android:layout_alignTop="@+id/button"
-        android:layout_centerHorizontal="true"
+        android:id="@+id/chronometer"
+        android:textColor="#ffffffff"
+        android:textSize="75dp"
+        android:visibility="invisible"
+        android:layout_marginTop="29dp"
+        android:layout_below="@+id/sSets"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/LogOutButtonText"
+        android:id="@+id/bLogOut"
         android:background="@android:color/transparent"
-        android:textColor="#ff00f610" />
+        android:textStyle="bold|italic"
+        android:textColor="#ffff7a56"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>

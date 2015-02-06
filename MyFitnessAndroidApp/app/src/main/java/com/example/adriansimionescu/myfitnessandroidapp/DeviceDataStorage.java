@@ -1,5 +1,6 @@
 package com.example.adriansimionescu.myfitnessandroidapp;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -43,5 +44,11 @@ public class DeviceDataStorage {
         }
 
         return(objectToReturn);
+    }
+
+    public static void RemoveFileFromDeviceStorage(String fileName)
+    {
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/" + fileName);
+        boolean deleted = file.delete();
     }
 }

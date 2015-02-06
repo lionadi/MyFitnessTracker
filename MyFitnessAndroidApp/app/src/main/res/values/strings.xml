@@ -12,6 +12,8 @@
     <string name="WelcomeText">Welcome to your fitness tracker!</string>
     <string name="Start" >Start</string>
     <string name="Stop" >Stop</string>
+    <string name="ActivityRecordTextBoxHintMessage">Insert your record value here</string>
+    <string name="LogOutButtonText">Log out</string>
 
 
 </resources>

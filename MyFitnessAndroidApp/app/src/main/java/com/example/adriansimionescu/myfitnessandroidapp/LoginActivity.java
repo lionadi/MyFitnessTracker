@@ -25,9 +25,14 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -107,6 +112,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             userLoginData.issued = jObj.getString(".issued");
             userLoginData.expires = jObj.getString(".expires");
             userLoginData.token_type = jObj.getString("token_type");
+            SimpleDateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss");
+            userLoginData.ExpiresAsDate = formatter.parse(userLoginData.expires.replace(" GMT",""));
             DeviceDataStorage.SerializeObjectToDeviceStorage(userLoginData, Constants.UserLoginData_FileName);
 
             // writing response to log
@@ -119,37 +126,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             e.printStackTrace();
 
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
+         catch (ParseException e)
+         {
+             e.printStackTrace();
+         }
 
     }
 
-    public String readJSONFeed(String URL) {
-        StringBuilder stringBuilder = new StringBuilder();
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(URL);
-        try {
-            HttpResponse response = httpClient.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream inputStream = entity.getContent();
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(inputStream));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-                inputStream.close();
-            } else {
-                Log.d("JSON", "Failed to download file");
-            }
-        } catch (Exception e) {
-            Log.d("readJSONFeed", e.getLocalizedMessage());
-        }
-        return stringBuilder.toString();
-    }
 
 
 
@@ -170,11 +155,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private LinearLayout llAccountData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -202,6 +189,20 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        llAccountData = (LinearLayout)findViewById(R.id.llAccountData);
+
+        // Check to see if there is a log in information that is active(not expired by the given time stamp from the server)
+        UserDataContainer.LoginData = DeviceDataStorage.DeSerializeObjectToDeviceStorage(Constants.UserLoginData_FileName);
+        if(UserDataContainer.LoginData != null) {
+
+                Calendar cal = Calendar.getInstance();
+                if(UserDataContainer.LoginData.ExpiresAsDate.after(cal.getTime()) == true) {
+                    showProgress(true);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+
+        }
     }
 
     private void populateAutoComplete() {
@@ -279,8 +280,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     if(UserDataContainer.LoginData != null) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
-                        showProgress(false);
                     }
+                }
+
+                @Override
+                protected void onCancelled() {
+
+                    showProgress(false);
                 }
             }.execute();
 
@@ -308,6 +314,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+            llAccountData.setVisibility(show ? View.GONE : View.VISIBLE);
+            llAccountData.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    llAccountData.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             mLoginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
@@ -330,6 +345,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            llAccountData.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 

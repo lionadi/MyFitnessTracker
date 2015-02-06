@@ -1,5 +1,7 @@
 package com.example.adriansimionescu.myfitnessandroidapp;
 
+import java.util.Date;
+
 /**
  * Created by Adrian Simionescu on 2/3/2015.
  */
@@ -10,4 +12,5 @@ public class UserLoginData implements java.io.Serializable {
     public String userName;
     public String issued;
     public String expires;
+    public Date ExpiresAsDate;
 }
