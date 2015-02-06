@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 /*
-* This class is thanks to the following link: http://hintdesk.com/how-to-call-asp-net-web-api-service-from-android/
+* Original version of this class thanks to the following link: http://hintdesk.com/how-to-call-asp-net-web-api-service-from-android/
 * Using GSon for object serialization
 * */
 public class JSONHttpClient {
@@ -38,6 +38,7 @@ public class JSONHttpClient {
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("Accept-Encoding", "gzip");
+            httpPost.setHeader("Authorization", UserDataContainer.LoginData.token_type + " " + UserDataContainer.LoginData.access_token);
 
             HttpResponse httpResponse = defaultHttpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
@@ -100,6 +101,7 @@ public class JSONHttpClient {
 
             httpGet.setHeader("Accept", "application/json");
             httpGet.setHeader("Accept-Encoding", "gzip");
+            httpGet.setHeader("Authorization", UserDataContainer.LoginData.token_type + " " + UserDataContainer.LoginData.access_token);
 
             HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
             HttpEntity httpEntity = httpResponse.getEntity();

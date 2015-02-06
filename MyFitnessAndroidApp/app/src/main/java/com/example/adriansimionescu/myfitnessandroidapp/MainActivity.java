@@ -240,6 +240,15 @@ public class MainActivity extends ActionBarActivity {
 
                 int checkedId = radioGroup.getCheckedRadioButtonId();
                 if (checkedId == R.id.SingleRecord) {
+                    ExerciseRecord er = new ExerciseRecord();
+                    er.StartDate = er.EndDate = er.Date = Calendar.getInstance().getTime();
+                    er.Record = Double.parseDouble(activityStatusInfo.getText().toString());
+                    er.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int)spinner.getSelectedItemId()).Exercises.get((int)spinnerExercise.getSelectedItemId()).ID);
+                    JSONHttpClient jsonHttpClient = new JSONHttpClient();
+                    er = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api" + "todo:relativeURL", er, ExerciseRecord.class);
+                    // todo: Intent intent = getIntent();
+                    //setResult(ResultCode.PRODUCT_UPDATE_SUCCESS, intent);
+                    //finish();
 
                 } else if (checkedId == R.id.Timer) {
 
@@ -277,6 +286,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    // TODO: Optimize but moving inside a panel type
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
