@@ -6,4 +6,6 @@ package com.example.adriansimionescu.myfitnessandroidapp;
 public class Constants {
     public static String UserLoginData_FileName = "UserLoginData.dat";
     public static String WebServiceLocation = "http://myfitnesstrackerwebapi.azurewebsites.net";
+    //public static String WebServiceLocation = "http://localhost:52797";
+
 }

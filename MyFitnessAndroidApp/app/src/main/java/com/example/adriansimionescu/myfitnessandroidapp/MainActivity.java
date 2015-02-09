@@ -238,18 +238,13 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
 
+                boolean saveRequested = false;
                 int checkedId = radioGroup.getCheckedRadioButtonId();
+                UserDataContainer.CurrentExerciseRecord = new ExerciseRecord();
                 if (checkedId == R.id.SingleRecord) {
-                    ExerciseRecord er = new ExerciseRecord();
-                    er.StartDate = er.EndDate = er.Date = Calendar.getInstance().getTime();
-                    er.Record = Double.parseDouble(activityStatusInfo.getText().toString());
-                    er.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int)spinner.getSelectedItemId()).Exercises.get((int)spinnerExercise.getSelectedItemId()).ID);
-                    JSONHttpClient jsonHttpClient = new JSONHttpClient();
-                    er = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api" + "todo:relativeURL", er, ExerciseRecord.class);
-                    // todo: Intent intent = getIntent();
-                    //setResult(ResultCode.PRODUCT_UPDATE_SUCCESS, intent);
-                    //finish();
 
+                    UserDataContainer.CurrentExerciseRecord.Record = Double.parseDouble(activityStatusInfo.getText().toString());
+                    saveRequested = true;
                 } else if (checkedId == R.id.Timer) {
 
                     if(timerStarted == false) {
@@ -265,7 +260,41 @@ public class MainActivity extends ActionBarActivity {
                         int hours = minutes / 60;
                         timerStarted = false;
                         activityAction.setText(R.string.Start);
+                        UserDataContainer.CurrentExerciseRecord.Record = elapsedMillis;
+                        saveRequested = true;
                     }
+                }
+
+                if(saveRequested)
+                {
+                    AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            UserDataContainer.CurrentExerciseRecord.StartDate = UserDataContainer.CurrentExerciseRecord.EndDate = UserDataContainer.CurrentExerciseRecord.Date = Calendar.getInstance().getTime();
+                            UserDataContainer.CurrentExerciseRecord.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int)spinner.getSelectedItemId()).Exercises.get((int)spinnerExercise.getSelectedItemId()).ID);
+
+                            JSONHttpClient jsonHttpClient = new JSONHttpClient();
+                            UserDataContainer.CurrentExerciseRecord = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecords", UserDataContainer.CurrentExerciseRecord, ExerciseRecord.class);
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void none) {
+                            Intent intent = new Intent(MainActivity.this, ExerciseRecordResults.class);
+                            startActivity(intent);
+
+                        }
+
+                        @Override
+                        protected void onCancelled() {
+
+
+                        }
+                    }.execute();
+
+
                 }
             }
         });
@@ -275,9 +304,10 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 Calendar cal = Calendar.getInstance();
-                if(UserDataContainer.LoginData.ExpiresAsDate.after(cal.getTime()) == false) {
+                /*if(UserDataContainer.LoginData.ExpiresAsDate.after(cal.getTime()) == false) {
                     DeviceDataStorage.RemoveFileFromDeviceStorage(Constants.UserLoginData_FileName);
-                }
+                }*/
+                DeviceDataStorage.RemoveFileFromDeviceStorage(Constants.UserLoginData_FileName);
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 showProgress(false);

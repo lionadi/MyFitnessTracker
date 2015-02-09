@@ -31,6 +31,10 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity
+            android:name=".ExerciseRecordResults"
+            android:label="@string/title_activity_exercise_record_results" >
+        </activity>
     </application>
 
 </manifest>

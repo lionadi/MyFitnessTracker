@@ -10,10 +10,12 @@
     <string name="AddExerciseRecord">Save Activity</string>
     <string name="ExerciseManagement">Add a new exercise record:</string>
     <string name="WelcomeText">Welcome to your fitness tracker!</string>
-    <string name="Start" >Start</string>
-    <string name="Stop" >Stop</string>
+    <string name="Start">Start</string>
+    <string name="Stop">Stop</string>
     <string name="ActivityRecordTextBoxHintMessage">Insert your record value here</string>
     <string name="LogOutButtonText">Log out</string>
-
+    <string name="title_activity_exercise_record_results">ExerciseRecordResults</string>
+    <string name="ResultsSaved">Result saved!</string>
+    <string name="ResultsGoBack" >Go Back</string>
 
 </resources>

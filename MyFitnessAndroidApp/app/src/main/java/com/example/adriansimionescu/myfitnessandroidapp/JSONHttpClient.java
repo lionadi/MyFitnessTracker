@@ -51,7 +51,7 @@ public class JSONHttpClient {
 
                 String resultString = convertStreamToString(inputStream);
                 inputStream.close();
-                return new GsonBuilder().create().fromJson(resultString, objectClass);
+                return new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create().fromJson(resultString, objectClass);
 
             }
 

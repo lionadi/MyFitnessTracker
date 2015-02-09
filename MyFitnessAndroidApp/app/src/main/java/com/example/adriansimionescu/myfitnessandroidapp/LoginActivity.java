@@ -280,6 +280,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                     if(UserDataContainer.LoginData != null) {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
+                    } else
+                    {
+                        showProgress(false);
                     }
                 }
 
