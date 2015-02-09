@@ -9,4 +9,6 @@ public class UserDataContainer {
     public static UserLoginData LoginData = null;
     public static List<UserSetData> UserSets = null;
     public static ExerciseRecord CurrentExerciseRecord = null;
+    public static ExerciseAttribute CurrentExerciseRecordGEOLocationAttribute = null;
+
 }

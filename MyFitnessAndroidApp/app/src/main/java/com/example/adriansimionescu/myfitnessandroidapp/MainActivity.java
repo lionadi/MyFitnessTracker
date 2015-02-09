@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.SystemClock;
@@ -31,7 +32,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-
+// Todo: improve network traffic usage
 public class MainActivity extends ActionBarActivity {
 
     private View mProgressView;
@@ -44,6 +45,7 @@ public class MainActivity extends ActionBarActivity {
     Spinner spinnerExercise;
     RadioGroup radioGroup;
     Button bLogOut;
+    GPSTracker gps;
 
     private void PopulateSetSpinnerWithServerData()
     {
@@ -104,6 +106,7 @@ public class MainActivity extends ActionBarActivity {
 
         //mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        gps = new GPSTracker(MainActivity.this);
 
         showProgress(true);
 
@@ -166,6 +169,9 @@ public class MainActivity extends ActionBarActivity {
             protected void onPostExecute(Void none) {
                 PopulateSetSpinnerWithServerData();
                 showProgress(false);
+                if(!gps.canGetLocation()) {
+                    gps.showSettingsAlert();
+                }
             }
 
             @Override
@@ -252,6 +258,13 @@ public class MainActivity extends ActionBarActivity {
                         chronometer.start();
                         activityAction.setText(R.string.Stop);
                         timerStarted = true;
+                        Location newStartLocation = gps.getLocation();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseAttribute();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Name = Constants.ServerExerciseRecordAttributeName_GEOLocation;
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = new String();
+
+                        if(newStartLocation != null)
+                            UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = newStartLocation.getLatitude()+ "#" + newStartLocation.getLongitude();
                     } else {
                         chronometer.stop();
                         long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
@@ -262,6 +275,7 @@ public class MainActivity extends ActionBarActivity {
                         activityAction.setText(R.string.Start);
                         UserDataContainer.CurrentExerciseRecord.Record = elapsedMillis;
                         saveRequested = true;
+                        gps.stopUsingGPS();
                     }
                 }
 
@@ -276,6 +290,8 @@ public class MainActivity extends ActionBarActivity {
 
                             JSONHttpClient jsonHttpClient = new JSONHttpClient();
                             UserDataContainer.CurrentExerciseRecord = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecords", UserDataContainer.CurrentExerciseRecord, ExerciseRecord.class);
+                            // TODO: Add geo location support
+                            //UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseAttribute.class);
 
                             return null;
                         }

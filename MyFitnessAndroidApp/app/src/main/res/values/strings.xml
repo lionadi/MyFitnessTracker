@@ -17,5 +17,6 @@
     <string name="title_activity_exercise_record_results">ExerciseRecordResults</string>
     <string name="ResultsSaved">Result saved!</string>
     <string name="ResultsGoBack" >Go Back</string>
+    <string name="ResultsRecordTitle">Record value:</string>
 
 </resources>

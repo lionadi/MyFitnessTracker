@@ -45,6 +45,8 @@ public class ExerciseRecordResults extends ActionBarActivity {
         bGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = null;
+                UserDataContainer.CurrentExerciseRecord = null;
                 Intent intent = new Intent(ExerciseRecordResults.this, MainActivity.class);
                 startActivity(intent);
             }
