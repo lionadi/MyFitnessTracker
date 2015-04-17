@@ -13,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -241,7 +242,16 @@ public class GPSTracker extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         if(UserDataContainer.CurrentExerciseRecordGEOLocationAttribute != null)
         {
-            UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data += location.getLatitude()+ "#" + location.getLongitude() + ";";
+            //UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data += location.getLatitude()+ "#" + location.getLongitude() + ";";
+            if(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null) {
+                GPSLocationData locationData = new GPSLocationData();
+                locationData.Latitude = location.getLatitude();
+                locationData.Longitude = location.getLongitude();
+
+                locationData.LocationTime = SystemClock.elapsedRealtime() - MainActivity.chronometer.getBase();
+                UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
+
+            }
         }
     }
 

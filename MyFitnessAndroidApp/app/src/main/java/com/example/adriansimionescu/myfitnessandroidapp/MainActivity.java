@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
     private boolean timerStarted = false;
 
     Button activityAction;
-    Chronometer chronometer;
+    public static Chronometer chronometer;
     EditText activityStatusInfo;
     Spinner spinner;
     Spinner spinnerExercise;
@@ -262,9 +262,12 @@ public class MainActivity extends ActionBarActivity {
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseAttribute();
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Name = Constants.ServerExerciseRecordAttributeName_GEOLocation;
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = new String();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute = new ArrayList<GPSLocationData>();
 
+                        // This is a single GPS location for a single entry
                         if(newStartLocation != null)
                             UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = newStartLocation.getLatitude()+ "#" + newStartLocation.getLongitude();
+
                     } else {
                         chronometer.stop();
                         long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
