@@ -23,6 +23,8 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -254,22 +256,29 @@ public class MainActivity extends ActionBarActivity {
                 } else if (checkedId == R.id.Timer) {
 
                     if(timerStarted == false) {
-                        chronometer.setBase(SystemClock.elapsedRealtime());
-                        chronometer.start();
-                        activityAction.setText(R.string.Stop);
-                        timerStarted = true;
+
                         Location newStartLocation = gps.getLocation();
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseAttribute();
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Name = Constants.ServerExerciseRecordAttributeName_GEOLocation;
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = new String();
                         UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute = new ArrayList<GPSLocationData>();
 
-                        // This is a single GPS location for a single entry
-                        if(newStartLocation != null)
-                            UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = newStartLocation.getLatitude()+ "#" + newStartLocation.getLongitude();
+                        // Get the current start location
+                        if(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null && newStartLocation != null) {
+                            GPSLocationData locationData = new GPSLocationData();
+                            locationData.Latitude = newStartLocation.getLatitude();
+                            locationData.Longitude = newStartLocation.getLongitude();
 
+                            locationData.LocationTime = 0;
+                            UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
+                        }
+                        chronometer.setBase(SystemClock.elapsedRealtime());
+                        chronometer.start();
+                        activityAction.setText(R.string.Stop);
+                        timerStarted = true;
                     } else {
                         chronometer.stop();
+                        Location stopLocation = gps.getLocation();
                         long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
                         long seconds = elapsedMillis / 1000;
                         int minutes = (int)seconds / 60;
@@ -277,6 +286,23 @@ public class MainActivity extends ActionBarActivity {
                         timerStarted = false;
                         activityAction.setText(R.string.Start);
                         UserDataContainer.CurrentExerciseRecord.Record = elapsedMillis;
+
+
+
+
+                        // Get the current stop location where the user has stoped moving
+                        if(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null && stopLocation != null) {
+                            GPSLocationData locationData = new GPSLocationData();
+                            locationData.Latitude = stopLocation.getLatitude();
+                            locationData.Longitude = stopLocation.getLongitude();
+
+                            locationData.LocationTime = 0;
+                            UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
+                        }
+
+                        Gson gson = new Gson();
+                        //JSONArray jsArray = new JSONArray(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute);
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = gson.toJson(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute);
                         saveRequested = true;
                         gps.stopUsingGPS();
                     }
@@ -294,7 +320,8 @@ public class MainActivity extends ActionBarActivity {
                             JSONHttpClient jsonHttpClient = new JSONHttpClient();
                             UserDataContainer.CurrentExerciseRecord = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecords", UserDataContainer.CurrentExerciseRecord, ExerciseRecord.class);
                             // TODO: Add geo location support
-                            //UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseAttribute.class);
+                            UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int)spinner.getSelectedItemId()).Exercises.get((int)spinnerExercise.getSelectedItemId()).ID);
+                            UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseAttribute.class);
 
                             return null;
                         }
@@ -333,6 +360,18 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    public String GetGPSLocationsForAttribute()
+    {
+        StringBuilder data = new StringBuilder();
+        for(int x = 0; x < UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.size(); ++x)
+        {
+
+
+        }
+
+        return data.toString();
     }
 
     // TODO: Optimize but moving inside a panel type

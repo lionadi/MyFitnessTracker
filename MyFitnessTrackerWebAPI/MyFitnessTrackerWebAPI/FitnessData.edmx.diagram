@@ -8,12 +8,12 @@
         <EntityTypeShape EntityType="MyFitnessTrackerDBModel.Exercise" Width="1.5" PointX="3" PointY="2.5" IsExpanded="true" />
         <EntityTypeShape EntityType="MyFitnessTrackerDBModel.ExerciseRecord" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MyFitnessTrackerDBModel.Set" Width="1.5" PointX="0.75" PointY="2.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.ExerciseAttribute" Width="1.5" PointX="5.25" PointY="4.25" IsExpanded="true" />
         <AssociationConnector Association="MyFitnessTrackerDBModel.FK_Exercise_Set1" ManuallyRouted="false" />
-        <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise" ManuallyRouted="false" />
         <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseRecord_Exercise" ManuallyRouted="false" />
         <EntityTypeShape EntityType="MyFitnessTrackerDBModel.AspNetUser" Width="1.5" PointX="0.75" PointY="7" />
         <AssociationConnector Association="MyFitnessTrackerDBModel.FK_Set_AspNetUsers" />
+        <EntityTypeShape EntityType="MyFitnessTrackerDBModel.ExerciseAttribute" Width="1.5" PointX="5.25" PointY="4.625" />
+        <AssociationConnector Association="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
