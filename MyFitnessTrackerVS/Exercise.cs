@@ -16,8 +16,8 @@ namespace MyFitnessTrackerVS
     {
         public Exercise()
         {
-            this.ExerciseAttributes = new HashSet<ExerciseAttribute>();
             this.ExerciseRecords = new HashSet<ExerciseRecord>();
+            this.ExerciseAttributes = new HashSet<ExerciseAttribute>();
         }
     
         public long Id { get; set; }
@@ -26,7 +26,7 @@ namespace MyFitnessTrackerVS
         public long SetId { get; set; }
     
         public virtual Set Set { get; set; }
-        public virtual ICollection<ExerciseAttribute> ExerciseAttributes { get; set; }
         public virtual ICollection<ExerciseRecord> ExerciseRecords { get; set; }
+        public virtual ICollection<ExerciseAttribute> ExerciseAttributes { get; set; }
     }
 }

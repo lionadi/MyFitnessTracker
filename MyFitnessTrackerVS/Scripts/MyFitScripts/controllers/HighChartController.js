@@ -1,12 +1,78 @@
 ﻿var highChartsController = {
     Chart: null,
+    MonthNames: [],
     ChartOptions: null,
     UserOverallDataByDateRange: [],
+    gmGeocoder : "",
+    gmBounds : "",
+    mapOptions : "",
+    gmMap : "",
     DataDateRange: { StartDate: null, EndDate: null },
-    ResetCalled : false,
+    ResetCalled: false,
+    CreateGoogleMapsObject: function(){
+
+        highChartsController.gmBounds = new google.maps.LatLngBounds();
+
+        highChartsController.mapOptions = {
+            zoom: 5,
+            mapTypeId: google.maps.MapTypeId.HYBRID
+        };
+
+        highChartsController.gmMap = new google.maps.Map($("#map_canvas")[0], highChartsController.mapOptions);
+        google.maps.event.addListenerOnce(highChartsController.gmMap, 'idle', function () {
+
+        });
+    },
+    SetMarkerForGoogleMapForSharePointList: function(gmLatLng, gmMap, gmBounds, title, contentForInfoWindow, isExternalMarker) {
+    var icon = "";
+    if (isExternalMarker)
+        icon = "yellow";
+    else
+        icon = "red";
+    icon = "http://maps.google.com/mapfiles/ms/icons/" + icon + ".png";
+    //var pos = new google.maps.LatLng(gmLatLng.k, gmLatLng.D);
+    var pos = new google.maps.LatLng("60.1708", "24.9375");
+    
+    var gmMarker = new google.maps.Marker({
+        position: pos,
+        map: gmMap,
+        title: title,
+        zIndex: 0,
+        icon: new google.maps.MarkerImage(icon)
+    });
+    gmBounds.extend(pos);
+    gmMap.setCenter(gmBounds.getCenter());
+    gmMap.fitBounds(gmBounds);
+    
+    if (contentForInfoWindow != null && contentForInfoWindow != "") {
+        var gmInfowindow = new google.maps.InfoWindow({
+            content: contentForInfoWindow,
+            maxWidth: 500,
+            maxHeight: 600
+        });
+    
+        google.maps.event.addListener(gmMarker, 'click', function () {
+            gmInfowindow.open(gmMap, gmMarker);
+            
+        });
+    }
+},
     SetupHighChartsOperations : function()
     {
-        highChartsController.ChartOptions = this.GetAndSteupHighChartsBaseOptions();
+        //MonthNames.push({ ID: 0, Name: "January" });
+        //MonthNames.push({ ID: 1, Name: "February" });
+        //MonthNames.push({ ID: 2, Name: "March" });
+        //MonthNames.push({ ID: 3, Name: "April" });
+
+        //MonthNames.push({ ID: 4, Name: "May" });
+        //MonthNames.push({ ID: 5, Name: "June" });
+        //MonthNames.push({ ID: 6, Name: "July" });
+        //MonthNames.push({ ID: 7, Name: "August" });
+
+        //MonthNames.push({ ID: 8, Name: "September" });
+        //MonthNames.push({ ID: 9, Name: "October" });
+        //MonthNames.push({ ID: 10, Name: "November" });
+        //MonthNames.push({ ID: 11, Name: "December" });
 
         // Sets and Exercise drop down selectors initializations
         //------------------------------------------------
@@ -39,6 +105,8 @@
                 }
             });
         });
+
+        highChartsController.ChartOptions = this.GetAndSteupHighChartsBaseOptions();
         this.LoadUserSets();
 
         //------------------------------------------------
@@ -138,6 +206,9 @@ Improving code logic
             highChartsController.LoadChartForSelectedExercise($('#userSets').find(":selected").val(), $('#userExercises').find(":selected").val());
         }
     },
+    LoadDataPanelForSelectedExerciseRecord: function (exerciseRecordId) {
+
+    },
     LoadChartForSelectedExercise: function (setId, exerciseId) {
         var uiStartDate = new Date($("#exerciseStartDatepicker").val()).toLocaleDateString(CookieHelper.ServerLanguage);
         var uiEndDate = new Date($("#exerciseEndDatepicker").val()).toLocaleDateString(CookieHelper.ServerLanguage);
@@ -159,8 +230,11 @@ Improving code logic
                                 if (setsData.Series.length > 0) {
                                     $.each(setsData.Series, function (index, item) {
                                         highChartsController.ChartOptions.series.push({
+                                            id: item.ID,
                                             name: item.Name,
-                                            data: item.Data
+                                            data: item.Data,
+                                            uiStartDate: uiStartDate,
+                                            uiEndDate: uiEndDate
                                         });
                                     });
                                 }
@@ -211,6 +285,7 @@ Improving code logic
 
                                 $.each(setsData.Series, function (index, item) {
                                     highChartsController.ChartOptions.series.push({
+                                        id: item.ID,
                                         name: item.Name,
                                         data: item.Data
                                     });
@@ -257,6 +332,7 @@ Improving code logic
                                 }
                                 $.each(setsData.Series, function (index, item) {
                                     highChartsController.ChartOptions.series.push({
+                                        id: item.ID,
                                         name: item.Name,
                                         data: item.Data
                                     });
@@ -354,6 +430,36 @@ Improving code logic
                 column: {
                     pointPadding: 0.2,
                     borderWidth: 0
+                },
+                series: {
+                    cursor: 'pointer',
+                    allowPointSelect: true,
+                    point: {
+                        events: {
+                            click: function () {
+                                // If No set was selected by the user so show show the set data
+                                if ($('#userSets').find(":selected").val() == "none") {
+                                    //highChartsController.LoadChartForSelectedSet($('#userSets').find(":selected").val());
+                                    $("#userSets").val(this.series.userOptions.id).change();
+                                    // If no exercise was selected and a set was selected then show the exercise data
+                                } else if ($('#userExercises').find(":selected").val() == "none") {
+                                    //highChartsController.LoadChartForSelectedExercise($('#userSets').find(":selected").val(), $('#userExercises').find(":selected").val());
+                                    $("#userExercises").val(this.series.userOptions.id).change();
+                                    // If a set was selected and a exercise was selected then show the exercise record if there is a single record selected and not a date with multiple values calculated
+                                } else if ($('#userExercises').find(":selected").val() != "none") {
+                                    if(this.series.userOptions.id <= 0)
+                                    {
+                                        alert("Multiple values selection not finnished!");
+                                    } else
+                                    {
+                                        highChartsController.CreateGoogleMapsObject();
+                                        highChartsController.SetMarkerForGoogleMapForSharePointList("", highChartsController.gmMap, highChartsController.gmBounds, "NOT READY", "TEST TEST TEST 123#", true);
+                                    }
+                                }
+                                alert('Category: ' + this.category + ', value: ' + this.y + ', id: ' + this.series.userOptions.id);
+                            }
+                        }
+                    }
                 }
             },
             series: []

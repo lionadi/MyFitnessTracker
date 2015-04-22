@@ -39,7 +39,7 @@ namespace MyFitnessTrackerVS
 
         public override string ToString()
         {
-            return (this.UserName);
+            return this.Email;
         }
     }
 }

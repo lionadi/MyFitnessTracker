@@ -47,15 +47,9 @@
           <Property Name="Target" Type="float" Nullable="false" />
           <Property Name="SetId" Type="bigint" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ExerciseAttributes">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="AttributeID" />
-            <PropertyRef Name="Name" />
-            <PropertyRef Name="Data" />
-            <PropertyRef Name="ExerciseId" />
           </Key>
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeID" Type="smallint" Nullable="false" />
@@ -163,17 +157,9 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Exercise" EntityType="Self.Exercise" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExerciseAttributes" EntityType="Self.ExerciseAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExerciseRecord" EntityType="Self.ExerciseRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Set" EntityType="Self.Set" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ExerciseAttributes" EntityType="Self.ExerciseAttributes" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [ExerciseAttributes].[Id] AS [Id], 
-    [ExerciseAttributes].[AttributeID] AS [AttributeID], 
-    [ExerciseAttributes].[Name] AS [Name], 
-    [ExerciseAttributes].[Data] AS [Data], 
-    [ExerciseAttributes].[ExerciseId] AS [ExerciseId]
-    FROM [dbo].[ExerciseAttributes] AS [ExerciseAttributes]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
@@ -232,8 +218,8 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
           <Property Name="Target" Type="Double" Nullable="false" />
           <Property Name="SetId" Type="Int64" Nullable="false" />
           <NavigationProperty Name="Set" Relationship="Self.FK_Exercise_Set1" FromRole="Exercise" ToRole="Set" />
-          <NavigationProperty Name="ExerciseAttributes" Relationship="Self.FK_ExerciseAttributes_Exercise" FromRole="Exercise" ToRole="ExerciseAttributes" />
           <NavigationProperty Name="ExerciseRecords" Relationship="Self.FK_ExerciseRecord_Exercise" FromRole="Exercise" ToRole="ExerciseRecord" />
+          <NavigationProperty Name="ExerciseAttributes" Relationship="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise" FromRole="Exercise" ToRole="ExerciseAttribute" />
         </EntityType>
         <EntityType Name="ExerciseRecord">
           <Key>
@@ -256,21 +242,6 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
           <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Set_AspNetUsers" FromRole="Set" ToRole="AspNetUsers" />
           <NavigationProperty Name="Exercises" Relationship="Self.FK_Exercise_Set1" FromRole="Set" ToRole="Exercise" />
-        </EntityType>
-        <EntityType Name="ExerciseAttribute">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="AttributeID" />
-            <PropertyRef Name="Name" />
-            <PropertyRef Name="Data" />
-            <PropertyRef Name="ExerciseId" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AttributeID" Type="Int16" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="512" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ExerciseId" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="Exercise" Relationship="Self.FK_ExerciseAttributes_Exercise" FromRole="ExerciseAttributes" ToRole="Exercise" />
         </EntityType>
         <Association Name="FK_Set_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
@@ -296,18 +267,6 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_ExerciseAttributes_Exercise">
-          <End Role="Exercise" Type="Self.Exercise" Multiplicity="1" />
-          <End Role="ExerciseAttributes" Type="Self.ExerciseAttribute" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Exercise">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ExerciseAttributes">
-              <PropertyRef Name="ExerciseId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ExerciseRecord_Exercise">
           <End Role="Exercise" Type="Self.Exercise" Multiplicity="1" />
           <End Role="ExerciseRecord" Type="Self.ExerciseRecord" Multiplicity="*" />
@@ -325,7 +284,6 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
           <EntitySet Name="Exercises" EntityType="Self.Exercise" />
           <EntitySet Name="ExerciseRecords" EntityType="Self.ExerciseRecord" />
           <EntitySet Name="Sets" EntityType="Self.Set" />
-          <EntitySet Name="ExerciseAttributes" EntityType="Self.ExerciseAttribute" />
           <AssociationSet Name="FK_Set_AspNetUsers" Association="Self.FK_Set_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Set" EntitySet="Sets" />
@@ -333,10 +291,6 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
           <AssociationSet Name="FK_Exercise_Set1" Association="Self.FK_Exercise_Set1">
             <End Role="Set" EntitySet="Sets" />
             <End Role="Exercise" EntitySet="Exercises" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ExerciseAttributes_Exercise" Association="Self.FK_ExerciseAttributes_Exercise">
-            <End Role="Exercise" EntitySet="Exercises" />
-            <End Role="ExerciseAttributes" EntitySet="ExerciseAttributes" />
           </AssociationSet>
           <AssociationSet Name="FK_ExerciseRecord_Exercise" Association="Self.FK_ExerciseRecord_Exercise">
             <End Role="Exercise" EntitySet="Exercises" />
@@ -346,6 +300,11 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
           <AssociationSet Name="AspNetUserRoles" Association="MyFitnessTrackerDBModel.AspNetUserRoles">
             <End Role="AspNetRole" EntitySet="AspNetRoles" />
             <End Role="AspNetUser" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <EntitySet Name="ExerciseAttributes" EntityType="MyFitnessTrackerDBModel.ExerciseAttribute" />
+          <AssociationSet Name="FK_ExerciseAttributes_Exercise" Association="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise">
+            <End Role="Exercise" EntitySet="Exercises" />
+            <End Role="ExerciseAttribute" EntitySet="ExerciseAttributes" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="AspNetRole">
@@ -359,6 +318,29 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
         <Association Name="AspNetUserRoles">
           <End Type="MyFitnessTrackerDBModel.AspNetRole" Role="AspNetRole" Multiplicity="*" />
           <End Type="MyFitnessTrackerDBModel.AspNetUser" Role="AspNetUser" Multiplicity="*" />
+        </Association>
+        <EntityType Name="ExerciseAttribute">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttributeID" Type="Int16" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="512" FixedLength="true" Unicode="true" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ExerciseId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Exercise" Relationship="MyFitnessTrackerDBModel.FK_ExerciseAttributes_Exercise" FromRole="ExerciseAttribute" ToRole="Exercise" />
+        </EntityType>
+        <Association Name="FK_ExerciseAttributes_Exercise">
+          <End Type="MyFitnessTrackerDBModel.Exercise" Role="Exercise" Multiplicity="1" />
+          <End Type="MyFitnessTrackerDBModel.ExerciseAttribute" Role="ExerciseAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Exercise">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseAttribute">
+              <PropertyRef Name="ExerciseId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -416,17 +398,6 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ExerciseAttributes">
-            <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.ExerciseAttribute">
-              <MappingFragment StoreEntitySet="ExerciseAttributes">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="AttributeID" ColumnName="AttributeID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Data" ColumnName="Data" />
-                <ScalarProperty Name="ExerciseId" ColumnName="ExerciseId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AspNetRoles">
             <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.AspNetRole">
               <MappingFragment StoreEntitySet="AspNetRoles">
@@ -443,6 +414,17 @@ warning 6002: The table/view 'MyFitnessTrackerDB.dbo.ExerciseAttributes' does no
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="ExerciseAttributes">
+            <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.ExerciseAttribute">
+              <MappingFragment StoreEntitySet="ExerciseAttributes">
+                <ScalarProperty Name="ExerciseId" ColumnName="ExerciseId" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AttributeID" ColumnName="AttributeID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
