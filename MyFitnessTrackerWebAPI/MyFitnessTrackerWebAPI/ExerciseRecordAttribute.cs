@@ -13,22 +13,15 @@ namespace MyFitnessTrackerWebAPI
     using System.Collections.Generic;
     using Newtonsoft.Json;
     
-    public partial class ExerciseRecord
+    public partial class ExerciseRecordAttribute
     {
-        public ExerciseRecord()
-        {
-            this.ExerciseRecordAttributes = new HashSet<ExerciseRecordAttribute>();
-        }
-    
         public long Id { get; set; }
-        public double Record { get; set; }
-        public System.DateTime Date { get; set; }
-        public System.DateTime StartDate { get; set; }
-        public System.DateTime EndDate { get; set; }
-        public long ExerciseId { get; set; }
+        public short AttributeID { get; set; }
+        public string Name { get; set; }
+        public string Data { get; set; }
+        public long ExerciseRecordID { get; set; }
 
         [JsonIgnore]
-        public virtual Exercise Exercise { get; set; }
-        public virtual ICollection<ExerciseRecordAttribute> ExerciseRecordAttributes { get; set; }
+        public virtual ExerciseRecord ExerciseRecord { get; set; }
     }
 }

@@ -1539,6 +1539,7 @@
     <Content Include="Scripts\MyFitScripts\controllers\loginMyFitnessUser.js" />
     <Content Include="Scripts\MyFitScripts\Helpers\Constants.js" />
     <Content Include="Scripts\MyFitScripts\Helpers\CookieHelper.js" />
+    <Content Include="Scripts\MyFitScripts\Helpers\GoogleServicesHelper.js" />
     <Content Include="Scripts\MyFitScripts\Helpers\Tools.js" />
     <Content Include="Scripts\MyFitScripts\Helpers\WebAPIHelper.js" />
     <Content Include="Scripts\MyFitScripts\services\AuthenticationService.js" />

@@ -31,7 +31,7 @@
         icon = "red";
     icon = "http://maps.google.com/mapfiles/ms/icons/" + icon + ".png";
     //var pos = new google.maps.LatLng(gmLatLng.k, gmLatLng.D);
-    var pos = new google.maps.LatLng("60.1708", "24.9375");
+    var pos = new google.maps.LatLng(gmLatLng.Latitude, gmLatLng.Longitude);
     
     var gmMarker = new google.maps.Marker({
         position: pos,
@@ -207,7 +207,82 @@ Improving code logic
         }
     },
     LoadDataPanelForSelectedExerciseRecord: function (exerciseRecordId) {
+        WebAPIHelper.Get("/api/ExerciseRecords/" + exerciseRecordId,
+                            function (data) {
+                                // Process here the record data
+                                var x = 0;
+                                // Process attributes for the record
+                                $.each(data.ExerciseRecordAttributes, function (index, item) {
+                                    // Add Name(Attribute) identification
+                                    var obj = JSON.parse(item.Data);
+                                    var geoLocationIndex = 0;
 
+                                    // Notice the length - 1 => means that we want to stop one location too son to not pass go all the way to the last position and pass as the next position undefined data
+                                    while(geoLocationIndex < obj.length -1)
+                                    {
+                                        var gDistanceMatrix = new google.maps.DistanceMatrixService();
+                                        var time = obj[geoLocationIndex + 1].LocationTime - obj[geoLocationIndex].LocationTime;
+                                        var destination = obj[geoLocationIndex + 1];
+
+                                        var flightPlanCoordinates = [
+                                            new google.maps.LatLng(obj[geoLocationIndex].Latitude, obj[geoLocationIndex].Longitude),
+                                            new google.maps.LatLng(obj[geoLocationIndex +1].Latitude, obj[geoLocationIndex +1].Longitude)
+                                        ];
+                                        var flightPath = new google.maps.Polyline({
+                                            path: flightPlanCoordinates,
+                                            geodesic: true,
+                                            strokeColor: '#FF0000',
+                                            strokeOpacity: 1.0,
+                                            strokeWeight: 3
+                                        });
+
+                                        flightPath.setMap(highChartsController.gmMap);
+
+                                        // Get the distance between the two points
+                                        gDistanceMatrix.getDistanceMatrix({
+                                            origins: [new google.maps.LatLng(obj[geoLocationIndex].Latitude, obj[geoLocationIndex].Longitude)],
+                                            destinations: [new google.maps.LatLng(obj[geoLocationIndex +1].Latitude, obj[geoLocationIndex +1].Longitude)],
+                                            travelMode: google.maps.TravelMode.DRIVING
+                                        },function (time, destination) {
+                                            return (function (response, status) {
+                                                if (status == google.maps.DistanceMatrixStatus.OK) {
+                                                    var origins = response.originAddresses;
+                                                    var destinations = response.destinationAddresses;
+
+                                                    for (var i = 0; i < origins.length; i++) {
+                                                        var results = response.rows[i].elements;
+                                                        for (var j = 0; j < results.length; j++) {
+                                                            var element = results[j];
+                                                            var distance = element.distance.text;
+                                                            var duration = element.duration.text;
+                                                            var from = origins[i];
+                                                            var to = destinations[j];
+                                                            var msgForInfoWindow = "";
+                                                            msgForInfoWindow += "<b>From: </b>" + from + "</br>";
+                                                            msgForInfoWindow += "<b>To: </b>" + to + "</br>";
+                                                            msgForInfoWindow += "<b>Distance: </b>" + distance + "</br>";
+                                                            msgForInfoWindow += "<b>Lap time: </b>" + (time / 1000) + " seconds</br>";
+                                                            highChartsController.SetMarkerForGoogleMapForSharePointList(destination, highChartsController.gmMap, highChartsController.gmBounds, "Your track time.", msgForInfoWindow, true);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }(time, destination));
+                                        
+                                        
+                                        // Skip only once since we want to move from one location to another and get the distance from each data point
+                                        geoLocationIndex++;
+                                    }
+                                    // process geo location data
+                                    //$.each(data.obj, function (index, itemObj) {
+                                    //    // Add Name(Attribute) identification
+                                        
+                                    //    var msgForInfoWindow = "";
+                                    //    highChartsController.SetMarkerForGoogleMapForSharePointList(itemObj, highChartsController.gmMap, highChartsController.gmBounds, "Your track time.", "TEST TEST TEST 123#", true);
+                                    //});
+                                });
+                            },
+                            null);
     },
     LoadChartForSelectedExercise: function (setId, exerciseId) {
         var uiStartDate = new Date($("#exerciseStartDatepicker").val()).toLocaleDateString(CookieHelper.ServerLanguage);
@@ -449,11 +524,11 @@ Improving code logic
                                 } else if ($('#userExercises').find(":selected").val() != "none") {
                                     if(this.series.userOptions.id <= 0)
                                     {
-                                        alert("Multiple values selection not finnished!");
+                                        alert("Multiple values(calculated values, nested) selection not finnished!");
                                     } else
                                     {
                                         highChartsController.CreateGoogleMapsObject();
-                                        highChartsController.SetMarkerForGoogleMapForSharePointList("", highChartsController.gmMap, highChartsController.gmBounds, "NOT READY", "TEST TEST TEST 123#", true);
+                                        highChartsController.LoadDataPanelForSelectedExerciseRecord(this.series.userOptions.id);
                                     }
                                 }
                                 alert('Category: ' + this.category + ', value: ' + this.y + ', id: ' + this.series.userOptions.id);

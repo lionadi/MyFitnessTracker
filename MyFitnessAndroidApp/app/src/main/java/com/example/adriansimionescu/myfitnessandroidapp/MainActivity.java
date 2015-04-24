@@ -258,7 +258,7 @@ public class MainActivity extends ActionBarActivity {
                     if(timerStarted == false) {
 
                         Location newStartLocation = gps.getLocation();
-                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseAttribute();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseRecordAttribute();
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Name = Constants.ServerExerciseRecordAttributeName_GEOLocation;
                         UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = new String();
                         UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute = new ArrayList<GPSLocationData>();
@@ -320,9 +320,9 @@ public class MainActivity extends ActionBarActivity {
                             JSONHttpClient jsonHttpClient = new JSONHttpClient();
                             UserDataContainer.CurrentExerciseRecord = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecords", UserDataContainer.CurrentExerciseRecord, ExerciseRecord.class);
                             // TODO: Add geo location support
-                            if(UserDataContainer.CurrentExerciseRecordGEOLocationAttribute != null) {
-                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int) spinner.getSelectedItemId()).Exercises.get((int) spinnerExercise.getSelectedItemId()).ID);
-                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseAttribute.class);
+                            if(UserDataContainer.CurrentExerciseRecordGEOLocationAttribute != null && UserDataContainer.CurrentExerciseRecord.Id > 0) {
+                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.ExerciseRecordID = UserDataContainer.CurrentExerciseRecord.Id;
+                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseRecordAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecordAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseRecordAttribute.class);
                             }
 
                             return null;

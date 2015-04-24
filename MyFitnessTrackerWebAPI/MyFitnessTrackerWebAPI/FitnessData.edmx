@@ -53,6 +53,16 @@
           <Property Name="EndDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ExerciseId" Type="bigint" Nullable="false" />
         </EntityType>
+        <EntityType Name="ExerciseRecordAttributes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttributeID" Type="smallint" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="512" Nullable="false" />
+          <Property Name="Data" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ExerciseRecordID" Type="bigint" Nullable="false" />
+        </EntityType>
         <EntityType Name="Set">
           <Key>
             <PropertyRef Name="Id" />
@@ -97,6 +107,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ExerciseRecordAttributes_ExerciseRecord">
+          <End Role="ExerciseRecord" Type="Self.ExerciseRecord" Multiplicity="1" />
+          <End Role="ExerciseRecordAttributes" Type="Self.ExerciseRecordAttributes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExerciseRecord">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseRecordAttributes">
+              <PropertyRef Name="ExerciseRecordID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Set_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="Set" Type="Self.Set" Multiplicity="*" />
@@ -114,6 +136,7 @@
           <EntitySet Name="Exercise" EntityType="Self.Exercise" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExerciseAttributes" EntityType="Self.ExerciseAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExerciseRecord" EntityType="Self.ExerciseRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExerciseRecordAttributes" EntityType="Self.ExerciseRecordAttributes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Set" EntityType="Self.Set" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Exercise_Set1" Association="Self.FK_Exercise_Set1">
             <End Role="Set" EntitySet="Set" />
@@ -126,6 +149,10 @@
           <AssociationSet Name="FK_ExerciseRecord_Exercise" Association="Self.FK_ExerciseRecord_Exercise">
             <End Role="Exercise" EntitySet="Exercise" />
             <End Role="ExerciseRecord" EntitySet="ExerciseRecord" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExerciseRecordAttributes_ExerciseRecord" Association="Self.FK_ExerciseRecordAttributes_ExerciseRecord">
+            <End Role="ExerciseRecord" EntitySet="ExerciseRecord" />
+            <End Role="ExerciseRecordAttributes" EntitySet="ExerciseRecordAttributes" />
           </AssociationSet>
           <AssociationSet Name="FK_Set_AspNetUsers" Association="Self.FK_Set_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -159,6 +186,7 @@
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="ExerciseId" Type="Int64" Nullable="false" />
           <NavigationProperty Name="Exercise" Relationship="Self.FK_ExerciseRecord_Exercise" FromRole="ExerciseRecord" ToRole="Exercise" />
+          <NavigationProperty Name="ExerciseRecordAttributes" Relationship="MyFitnessTrackerDBModel.FK_ExerciseRecordAttributes_ExerciseRecord" FromRole="ExerciseRecord" ToRole="ExerciseRecordAttribute" />
         </EntityType>
         <EntityType Name="Set">
           <Key>
@@ -216,6 +244,11 @@
             <End Role="Exercise" EntitySet="Exercises" />
             <End Role="ExerciseAttribute" EntitySet="ExerciseAttributes" />
           </AssociationSet>
+          <EntitySet Name="ExerciseRecordAttributes" EntityType="MyFitnessTrackerDBModel.ExerciseRecordAttribute" />
+          <AssociationSet Name="FK_ExerciseRecordAttributes_ExerciseRecord" Association="MyFitnessTrackerDBModel.FK_ExerciseRecordAttributes_ExerciseRecord">
+            <End Role="ExerciseRecord" EntitySet="ExerciseRecords" />
+            <End Role="ExerciseRecordAttribute" EntitySet="ExerciseRecordAttributes" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AspNetUser">
           <Key>
@@ -268,6 +301,29 @@
             </Principal>
             <Dependent Role="ExerciseAttribute">
               <PropertyRef Name="ExerciseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ExerciseRecordAttribute">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttributeID" Type="Int16" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="512" FixedLength="true" Unicode="true" />
+          <Property Name="Data" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ExerciseRecordID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ExerciseRecord" Relationship="MyFitnessTrackerDBModel.FK_ExerciseRecordAttributes_ExerciseRecord" FromRole="ExerciseRecordAttribute" ToRole="ExerciseRecord" />
+        </EntityType>
+        <Association Name="FK_ExerciseRecordAttributes_ExerciseRecord">
+          <End Type="MyFitnessTrackerDBModel.ExerciseRecord" Role="ExerciseRecord" Multiplicity="1" />
+          <End Type="MyFitnessTrackerDBModel.ExerciseRecordAttribute" Role="ExerciseRecordAttribute" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExerciseRecord">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ExerciseRecordAttribute">
+              <PropertyRef Name="ExerciseRecordID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -331,6 +387,17 @@
             <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.ExerciseAttribute">
               <MappingFragment StoreEntitySet="ExerciseAttributes">
                 <ScalarProperty Name="ExerciseId" ColumnName="ExerciseId" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AttributeID" ColumnName="AttributeID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExerciseRecordAttributes">
+            <EntityTypeMapping TypeName="MyFitnessTrackerDBModel.ExerciseRecordAttribute">
+              <MappingFragment StoreEntitySet="ExerciseRecordAttributes">
+                <ScalarProperty Name="ExerciseRecordID" ColumnName="ExerciseRecordID" />
                 <ScalarProperty Name="Data" ColumnName="Data" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="AttributeID" ColumnName="AttributeID" />

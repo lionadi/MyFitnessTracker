@@ -259,6 +259,7 @@
     <Compile Include="Controllers\Base\ControllerBase.cs" />
     <Compile Include="Controllers\ColumnDataHighChartController.cs" />
     <Compile Include="Controllers\ExerciseAttributesController.cs" />
+    <Compile Include="Controllers\ExerciseRecordAttributesController.cs" />
     <Compile Include="Controllers\ExerciseRecordsController.cs" />
     <Compile Include="Controllers\ExercisesController.cs" />
     <Compile Include="Controllers\HighCharts\ChartSetController.cs" />
@@ -274,6 +275,9 @@
       <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="ExerciseRecord.cs">
+      <DependentUpon>FitnessData.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExerciseRecordAttribute.cs">
       <DependentUpon>FitnessData.tt</DependentUpon>
     </Compile>
     <Compile Include="FitnessData.Context.cs">
@@ -368,6 +372,7 @@
     </Content>
     <Content Include="Models\ChartModels\ChartsClassDiagram.cd" />
     <Content Include="Models\HighChartModels\HighChartsClassDiagram.cd" />
+    <None Include="Properties\PublishProfiles\LocalWebApiDeployment.pubxml" />
     <None Include="Properties\PublishProfiles\MyFitnessTrackerWebAPI.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
