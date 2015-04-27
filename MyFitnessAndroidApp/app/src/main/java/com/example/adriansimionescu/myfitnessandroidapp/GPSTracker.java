@@ -38,7 +38,7 @@ public class GPSTracker extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 10 * 1; // 1 minute
 
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -48,7 +48,7 @@ public class GPSTracker extends Service implements LocationListener {
         getLocation();
     }
 
-    private static final int TWO_MINUTES = 1000 * 60 * 1;
+    private static final int TWO_MINUTES = 1000 * 10 * 1;
 
     /** Determines whether one Location reading is better than the current Location fix
      * @param location  The new Location that you want to evaluate

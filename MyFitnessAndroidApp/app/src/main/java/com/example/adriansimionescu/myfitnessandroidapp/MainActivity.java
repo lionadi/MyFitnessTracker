@@ -296,7 +296,7 @@ public class MainActivity extends ActionBarActivity {
                             locationData.Latitude = stopLocation.getLatitude();
                             locationData.Longitude = stopLocation.getLongitude();
 
-                            locationData.LocationTime = 0;
+                            locationData.LocationTime = elapsedMillis;
                             UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
                         }
 
