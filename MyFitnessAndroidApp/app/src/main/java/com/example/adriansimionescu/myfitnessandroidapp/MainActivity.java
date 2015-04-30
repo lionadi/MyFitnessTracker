@@ -33,12 +33,35 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import microsoft.aspnet.signalr.client.SignalRFuture;
+import microsoft.aspnet.signalr.client.hubs.HubConnection;
+import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import com.google.android.gms.gcm.*;
+import com.microsoft.windowsazure.messaging.*;
+import com.microsoft.windowsazure.notifications.NotificationsManager;
+
+//http://azure.microsoft.com/fi-fi/documentation/articles/notification-hubs-android-get-started/
 
 // Todo: improve network traffic usage
 public class MainActivity extends ActionBarActivity {
 
     private View mProgressView;
     private boolean timerStarted = false;
+    private RegisterClient registerClient;
+    private static final String BACKEND_ENDPOINT = "<Enter Your Backend Endpoint>";
+
+    private String SENDER_ID = "407169728181";
+    private GoogleCloudMessaging gcm;
+    private NotificationHub hub;
+    private String HubName = "fittracker";
+    private String HubListenConnectionString = "Endpoint=sb://fittracker-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=s0AifFs0m1gIN02PO7CIfLb9ciy3yeVylGEU2Jfp5yk=";
 
     Button activityAction;
     public static Chronometer chronometer;
@@ -93,6 +116,55 @@ public class MainActivity extends ActionBarActivity {
         //-------------------------------------------------------------------
     }
 
+    @SuppressWarnings("unchecked")
+    private void registerWithNotificationHubs() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object... params) {
+                try {
+                    String regid = gcm.register(SENDER_ID);
+                    DialogNotify("Registered Successfully","RegId : " +
+                            hub.register(regid).getRegistrationId());
+                } catch (Exception e) {
+                    DialogNotify("Exception",e.getMessage());
+                    return e;
+                }
+                return null;
+            }
+        }.execute(null, null, null);
+    }
+
+    /**
+     * A modal AlertDialog for displaying a message on the UI thread
+     * when theres an exception or message to report.
+     *
+     * @param title   Title for the AlertDialog box.
+     * @param message The message displayed for the AlertDialog box.
+     */
+    public void DialogNotify(final String title,final String message)
+    {
+        final AlertDialog.Builder dlg;
+        dlg = new AlertDialog.Builder(this);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog dlgAlert = dlg.create();
+                dlgAlert.setTitle(title);
+                dlgAlert.setButton(DialogInterface.BUTTON_POSITIVE,
+                        (CharSequence) "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                dlgAlert.setMessage(message);
+                dlgAlert.setCancelable(false);
+                dlgAlert.show();
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +184,43 @@ public class MainActivity extends ActionBarActivity {
 
         showProgress(true);
 
+        MyHandler.mainActivity = this;
+        NotificationsManager.handleNotifications(this, SENDER_ID, MyHandler.class);
+        gcm = GoogleCloudMessaging.getInstance(this);
+        hub = new NotificationHub(HubName, HubListenConnectionString, this);
+        registerWithNotificationHubs();
+
+
+        HubConnection connection = new HubConnection( Constants.WebServiceLocation );
+        connection.getHeaders().put("Accept", "application/json");
+        connection.getHeaders().put("Content-Type", "application/json");
+        connection.getHeaders().put("Authorization", UserDataContainer.LoginData.token_type + " " + UserDataContainer.LoginData.access_token);
+        HubProxy hub = connection.createHubProxy( "myFitHub" );
+
+
+        SignalRFuture<Void> awaitConnection = connection.start();
+
+
+        try {
+            awaitConnection.get();
+        } catch (InterruptedException e) {
+            // Handle ...
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // Handle ...
+            e.printStackTrace();
+        }
+
+        hub.on( "refreshSets",
+                new SubscriptionHandler1<String>() {
+                    @Override
+                    public void run( String status ) {
+                        // Since we are updating the UI,
+                        // we need to use a handler of the UI thread.
+                        String statusa = status;
+                    }
+                }
+                , String.class );
 
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
