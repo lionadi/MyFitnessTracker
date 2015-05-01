@@ -71,6 +71,21 @@ $(document).ready(function () {
 
     //    }
     //});
+    //var connection = $.hubConnection();
+    var connection = $.hubConnection(Constants.SignalRGatewayLocation);
+    var contosoChatHubProxy = connection.createHubProxy(Constants.SignalRHubProxyName);
+    contosoChatHubProxy.on(Constants.SignalRHubMethod_IsDataUpdateRequiredForWeb, function (name, isRequired, message) {
+        // Html encode display name and message.
+        var encodedName = $('<div />').text(name).html();
+        var encodedMsg = $('<div />').text("isDataUpdateRequiredForWeb is Update Required: " + isRequired + " Message: " + message).html();
+        // Add the message to the page.
+        $('#notifications').append('<ul><li><strong>' + encodedName
+            + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li></ul>');
+    });
+    connection.start()
+        .done(function () { console.log('Now connected, connection ID=' + connection.id); })
+        .fail(function () { console.log('Could not connect'); });
+
     $('#userFitnessData').hide();
     $('#userNoLogOn').show();
 

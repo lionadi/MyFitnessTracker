@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using MyFitnessTrackerVS;
 using MyFitnessTrackerLibrary.Globals;
+using MyFitnessTrackerLibrary.SignalRLogic;
 
 namespace MyFitnessTrackerVS.Controllers
 {
@@ -21,7 +22,7 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: Exercises
         public async Task<ActionResult> Index()
         {
-            
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Get Exercise operation.");
             var exercises = db.Exercises.Include(e => e.Set).Where(o => o.Set.UserId.ToLower().CompareTo(user.Id.ToLower()) == 0);
             return View(await exercises.ToListAsync());
         }
@@ -29,6 +30,7 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: Exercises/Details/5
         public async Task<ActionResult> Details(long? id)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Get Exercise operation.");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -56,6 +58,7 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Name,Target,SetId")] Exercise exercise)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Create Exercise operation.");
             if (ModelState.IsValid)
             {
                 db.Exercises.Add(exercise);
@@ -90,6 +93,7 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Target,SetId")] Exercise exercise)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Update Exercise operation.");
             if (ModelState.IsValid)
             {
                 db.Entry(exercise).State = EntityState.Modified;
@@ -120,6 +124,7 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Delete Exercise operation.");
             Exercise exercise = await db.Exercises.FindAsync(id);
             db.Exercises.Remove(exercise);
             await db.SaveChangesAsync();

@@ -35,6 +35,7 @@ namespace MyFitnessTrackerVS
                 //.Include("~/Scripts/angular-local-storage.min.js")
                 //.Include("~/Scripts/loading-bar.min.js")
                 .Include("~/Scripts/jquery.cookie.js")
+                .Include("~/Scripts/jquery.signalR-2.2.0.js")
                 .Include("~/Scripts/jQAllRangeSliders-min.js")
                 .IncludeDirectory("~/Scripts/MyFitScripts/Helpers", "*.js")
                 .IncludeDirectory("~/Scripts/MyFitScripts/controllers", "*.js")

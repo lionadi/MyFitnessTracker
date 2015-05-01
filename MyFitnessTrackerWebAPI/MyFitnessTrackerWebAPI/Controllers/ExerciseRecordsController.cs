@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using MyFitnessTrackerWebAPI;
 using MyFitnessTrackerLibrary.Globals;
+using MyFitnessTrackerLibrary.SignalRLogic;
 
 namespace MyFitnessTrackerWebAPI.Controllers
 {
@@ -46,6 +47,8 @@ namespace MyFitnessTrackerWebAPI.Controllers
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutExerciseRecord(long id, ExerciseRecord exerciseRecord)
         {
+            await HubGateway.GetInstance().IsDataUpdateRequiredForWeb(user.Email, true, "Update exercise record operation");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -64,6 +67,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
             try
             {
                 await db.SaveChangesAsync();
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -84,6 +88,8 @@ namespace MyFitnessTrackerWebAPI.Controllers
         [ResponseType(typeof(ExerciseRecord))]
         public async Task<IHttpActionResult> PostExerciseRecord(ExerciseRecord exerciseRecord)
         {
+            await HubGateway.GetInstance().IsDataUpdateRequiredForWeb(user.Email, true, "Create exercise record operation");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -92,6 +98,7 @@ namespace MyFitnessTrackerWebAPI.Controllers
             db.ExerciseRecords.Add(exerciseRecord);
             await db.SaveChangesAsync();
 
+
             return CreatedAtRoute("DefaultApi", new { id = exerciseRecord.Id }, exerciseRecord);
         }
 
@@ -99,6 +106,8 @@ namespace MyFitnessTrackerWebAPI.Controllers
         [ResponseType(typeof(ExerciseRecord))]
         public async Task<IHttpActionResult> DeleteExerciseRecord(long id)
         {
+            await HubGateway.GetInstance().IsDataUpdateRequiredForWeb(user.Email, true, "Delete exercise record operation");
+
             ExerciseRecord exerciseRecord = await db.ExerciseRecords.FindAsync(id);
 
             if (exerciseRecord.Exercise.Set.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) != 0)

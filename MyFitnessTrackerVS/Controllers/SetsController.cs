@@ -8,6 +8,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyFitnessTrackerVS;
+using MyFitnessTrackerLibrary.SignalRLogic;
+
 
 namespace MyFitnessTrackerVS.Controllers
 {
@@ -20,13 +22,16 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: Sets
         public async Task<ActionResult> Index()
         {
-            var sets = db.Sets.Include(s => s.AspNetUser).Where(o => o.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0); ;
+
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Get Set operation.");
+            var sets = db.Sets.Include(s => s.AspNetUser).Where(o => o.AspNetUser.Id.ToLower().CompareTo(user.Id.ToLower()) == 0);
             return View(await sets.ToListAsync());
         }
 
         // GET: Sets/Details/5
         public async Task<ActionResult> Details(long? id)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Get Set operation.");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -58,6 +63,7 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Name,UserId")] Set set)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Create Set operation.");
             if (ModelState.IsValid)
             {
                 db.Sets.Add(set);
@@ -74,6 +80,7 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: Sets/Edit/5
         public async Task<ActionResult> Edit(long? id)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Get Set operation.");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -94,6 +101,7 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "Id,Name,UserId")] Set set)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Update Set operation.");
             if (ModelState.IsValid)
             {
                 db.Entry(set).State = EntityState.Modified;
@@ -107,6 +115,7 @@ namespace MyFitnessTrackerVS.Controllers
         // GET: Sets/Delete/5
         public async Task<ActionResult> Delete(long? id)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Get Set operation.");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -124,6 +133,7 @@ namespace MyFitnessTrackerVS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
+            await HubGateway.GetInstance().SendNormalMessage(user.Email, "Delete Set operation.");
             Set set = await db.Sets.FindAsync(id);
             db.Sets.Remove(set);
             await db.SaveChangesAsync();
