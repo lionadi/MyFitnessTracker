@@ -59,6 +59,7 @@ namespace MyFitnessTrackerVS.Controllers
         public async Task<ActionResult> Create([Bind(Include = "Id,Name,Target,SetId")] Exercise exercise)
         {
             await HubGateway.GetInstance().SendNormalMessage(user.Email, "Create Exercise operation.");
+            await HubGateway.GetInstance().IsDataUpdateRequiredForMobileClient(user.Email, true, "Client Mobile Application needs to update UI with new data from server.");
             if (ModelState.IsValid)
             {
                 db.Exercises.Add(exercise);
@@ -94,6 +95,7 @@ namespace MyFitnessTrackerVS.Controllers
         public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Target,SetId")] Exercise exercise)
         {
             await HubGateway.GetInstance().SendNormalMessage(user.Email, "Update Exercise operation.");
+            await HubGateway.GetInstance().IsDataUpdateRequiredForMobileClient(user.Email, true, "Client Mobile Application needs to update UI with new data from server.");
             if (ModelState.IsValid)
             {
                 db.Entry(exercise).State = EntityState.Modified;
@@ -125,6 +127,7 @@ namespace MyFitnessTrackerVS.Controllers
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
             await HubGateway.GetInstance().SendNormalMessage(user.Email, "Delete Exercise operation.");
+            await HubGateway.GetInstance().IsDataUpdateRequiredForMobileClient(user.Email, true, "Client Mobile Application needs to update UI with new data from server.");
             Exercise exercise = await db.Exercises.FindAsync(id);
             db.Exercises.Remove(exercise);
             await db.SaveChangesAsync();

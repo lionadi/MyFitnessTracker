@@ -10,7 +10,7 @@ namespace MyFitnessTrackerLibrary.SignalRLogic
 {
     public class HubGateway
     {
-        private String hubLocation = "http://localhost:49212/";
+        private String hubLocation = "http://signalrgateway.azurewebsites.net/";
         private static HubGateway _hubGateway = null;
         private String hubProxyName = "ChatHub";
         private IHubProxy hubProxy = null;

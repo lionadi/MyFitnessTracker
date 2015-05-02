@@ -28,7 +28,7 @@ namespace MyFitnessTrackerLibrary.ServiceBus
 
         public async Task<NotificationOutcome> SendMessage(string message)
         {
-            var toast = @"<toast><visual><binding template=""ToastText01""><text id=""1"">" + message + "</text></binding></visual></toast>";
+            var toast = "{ \"data\" : {\"message\":\"" + "From : " + message + "\"}}";
             return await hub.SendGcmNativeNotificationAsync(toast);
         }
 

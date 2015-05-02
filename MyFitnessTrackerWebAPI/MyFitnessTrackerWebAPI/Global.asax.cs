@@ -18,6 +18,7 @@ namespace MyFitnessTrackerWebAPI
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            MyFitnessTrackerLibrary.SignalRLogic.HubGateway.GetInstance().SourceID = "WebAPI Service";
         }
     }
 }

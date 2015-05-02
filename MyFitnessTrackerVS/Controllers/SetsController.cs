@@ -64,6 +64,7 @@ namespace MyFitnessTrackerVS.Controllers
         public async Task<ActionResult> Create([Bind(Include = "Id,Name,UserId")] Set set)
         {
             await HubGateway.GetInstance().SendNormalMessage(user.Email, "Create Set operation.");
+            await HubGateway.GetInstance().IsDataUpdateRequiredForMobileClient(user.Email, true, "Client Mobile Application needs to update UI with new data from server.");
             if (ModelState.IsValid)
             {
                 db.Sets.Add(set);
@@ -102,6 +103,7 @@ namespace MyFitnessTrackerVS.Controllers
         public async Task<ActionResult> Edit([Bind(Include = "Id,Name,UserId")] Set set)
         {
             await HubGateway.GetInstance().SendNormalMessage(user.Email, "Update Set operation.");
+            await HubGateway.GetInstance().IsDataUpdateRequiredForMobileClient(user.Email, true, "Client Mobile Application needs to update UI with new data from server.");
             if (ModelState.IsValid)
             {
                 db.Entry(set).State = EntityState.Modified;
@@ -134,6 +136,7 @@ namespace MyFitnessTrackerVS.Controllers
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
             await HubGateway.GetInstance().SendNormalMessage(user.Email, "Delete Set operation.");
+            await HubGateway.GetInstance().IsDataUpdateRequiredForMobileClient(user.Email, true, "Client Mobile Application needs to update UI with new data from server.");
             Set set = await db.Sets.FindAsync(id);
             db.Sets.Remove(set);
             await db.SaveChangesAsync();
