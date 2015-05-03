@@ -14,7 +14,7 @@ namespace FitTrackerHubCentral.Models
 
         private Notifications()
         {
-            Hub = NotificationHubClient.CreateClientFromConnectionString("con string", "fittracker");
+            Hub = NotificationHubClient.CreateClientFromConnectionString(MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubConnectionString, MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubName);
         }
     }
 }
