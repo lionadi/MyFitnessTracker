@@ -5,14 +5,17 @@ using System.Web;
 using Microsoft.AspNet.SignalR.Client;
 using System.Threading.Tasks;
 using MyFitnessTrackerLibrary.ServiceBus;
+using MyFitnessTrackerLibrary.Globals;
 
 namespace MyFitnessTrackerLibrary.SignalRLogic
 {
     public class HubGateway
     {
-        private String hubLocation = "http://signalrgateway.azurewebsites.net/";
+        //private String hubLocation = "http://signalrgateway.azurewebsites.net/";
+        //private String hubLocation = "http://localhost:49212/";
+        private String hubLocation = MyFitAppSettings.SignalRHubHostLocation;
         private static HubGateway _hubGateway = null;
-        private String hubProxyName = "ChatHub";
+        private String hubProxyName = MyFitAppSettings.SignalRHubProxy;
         private IHubProxy hubProxy = null;
         private HubConnection hubConnection = null;
         private String sourceID = "NO ID";
@@ -50,20 +53,20 @@ namespace MyFitnessTrackerLibrary.SignalRLogic
 
         public async Task SendNormalMessage(String name, String message)
         {
-            await this.Start();
+            await this.Start(name);
             await this.HubProxyPoint.Invoke("Send", name, message + " #Source ID: " + this.sourceID);
         }
 
         public async Task IsDataUpdateRequiredForWeb(String name, bool isRequired, String message)
         {
-            await this.Start();
+            await this.Start(name);
             await this.HubProxyPoint.Invoke("IsDataUpdateRequiredForWeb", name, isRequired, message + " #Source ID: " + this.sourceID);
             await NotificationGateway.GetInstance().SendMessage("New data was added. Your UI is updated/updating.");
         }
 
         public async Task IsDataUpdateRequiredForMobileClient(String name, bool isRequired, String message)
         {
-            await this.Start();
+            await this.Start(name);
             await this.HubProxyPoint.Invoke("IsDataUpdateRequiredForMobileClient", name, isRequired, message + " #Source ID: " + this.sourceID);
             await NotificationGateway.GetInstance().SendMessage("New data was added. Your UI is updated/updating.");
         }
@@ -78,10 +81,15 @@ namespace MyFitnessTrackerLibrary.SignalRLogic
             return _hubGateway;
         }
 
-        public async Task Start()
+        public async Task Start(String userName)
         {
-            if(hubConnection.State == ConnectionState.Disconnected)
+            if (hubConnection.State == ConnectionState.Disconnected)
+            {
+                if(!this.hubConnection.Headers.ContainsKey(Constants.SignalR_HeaderID_Username))
+                    this.hubConnection.Headers.Add(new KeyValuePair<string, string>(Constants.SignalR_HeaderID_Username, userName));
+
                 await hubConnection.Start();
+            }
         }
 
         public void Stop()

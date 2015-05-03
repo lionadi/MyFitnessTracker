@@ -15,7 +15,11 @@ namespace MyFitnessTrackerLibrary.ServiceBus
         public NotificationGateway()
         {
 
-            hub = NotificationHubClient.CreateClientFromConnectionString("Endpoint=sb://fittracker-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=cEXxDDCyicMx2VgUhdvUPzm6Ylo9cvxKuMjWz3NI1gc=", "fittracker");
+<<<<<<< HEAD
+            hub = NotificationHubClient.CreateClientFromConnectionString(MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubConnectionString, MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubName);
+=======
+            hub = NotificationHubClient.CreateClientFromConnectionString("con string", "fittracker");
+>>>>>>> origin/master
             
         
             
