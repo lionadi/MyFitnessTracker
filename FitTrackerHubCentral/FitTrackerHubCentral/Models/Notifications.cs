@@ -14,7 +14,7 @@ namespace FitTrackerHubCentral.Models
 
         private Notifications()
         {
-            Hub = NotificationHubClient.CreateClientFromConnectionString(MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubConnectionString, MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubName);
+            Hub = NotificationHubClient.CreateClientFromConnectionString("Endpoint=sb://fittracker-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=cEXxDDCyicMx2VgUhdvUPzm6Ylo9cvxKuMjWz3NI1gc=", "fittracker");
         }
     }
 }
