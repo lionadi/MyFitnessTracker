@@ -15,7 +15,7 @@ namespace MyFitnessTrackerLibrary.ServiceBus
         public NotificationGateway()
         {
 
-            hub = NotificationHubClient.CreateClientFromConnectionString("con string", "fittracker");
+            hub = NotificationHubClient.CreateClientFromConnectionString(MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubConnectionString, MyFitnessTrackerLibrary.Globals.MyFitAppSettings.NotificationHubName);
             
         
             
