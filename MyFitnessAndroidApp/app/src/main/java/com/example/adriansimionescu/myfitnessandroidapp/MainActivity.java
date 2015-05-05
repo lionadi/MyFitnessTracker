@@ -404,9 +404,12 @@ public class MainActivity extends ActionBarActivity implements ServiceCallbacks 
     protected void onStart() {
         super.onStart();
         // Bind to LocalService
-        Intent intent = new Intent(this, SignalRService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        this.startService(intent);
+
+            Intent intent = new Intent(this, SignalRService.class);
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        if(this.signalRService == null) {
+            this.startService(intent);
+        }
     }
 
     @Override
