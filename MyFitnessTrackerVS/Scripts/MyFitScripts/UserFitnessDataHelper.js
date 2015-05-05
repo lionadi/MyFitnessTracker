@@ -14,6 +14,7 @@ var UserFitnessDataHelper =
         {
             UserFitnessDataHelper.GetServerStatus();
             UserFitnessDataHelper.SetupHTMLControlsSettings();
+            jQuery.support.cors = true;
             
         },
         GetServerStatus : function()

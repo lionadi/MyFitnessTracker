@@ -189,6 +189,7 @@ Improving code logic
     SignalRWebUpdateRequestedByMobileClient: function()
     {
         var connection = $.hubConnection(Constants.SignalRGatewayLocation);
+        connection.qs = { "username": CookieHelper.UserName };
         var contosoChatHubProxy = connection.createHubProxy(Constants.SignalRHubProxyName);
         contosoChatHubProxy.on(Constants.SignalRHubMethod_IsDataUpdateRequiredForWeb, function (name, isRequired, message) {
             // Html encode display name and message.
@@ -201,8 +202,13 @@ Improving code logic
             highChartsController.LoadProperChartByUserSelection();
         });
         connection.start()
-            .done(function () { console.log('Now connected, connection ID=' + connection.id); })
-            .fail(function () { console.log('Could not connect'); });
+            .done(function () {
+                console.log('Now connected, connection ID=' + connection.id
+                    );
+            })
+            .fail(function () {
+                console.log('Could not connect');
+            });
     },
     LoadProperChartByUserSelection : function ()
     {

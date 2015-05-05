@@ -103,6 +103,8 @@ namespace SignalRGateway
             {
                 name = Context.QueryString[Constants.SignalR_HeaderID_Username];
             }
+            if (String.IsNullOrEmpty(name))
+                return null;
 
             // Notice that the partition keys are stored in azure storage as lower case
             return name.ToLowerInvariant();

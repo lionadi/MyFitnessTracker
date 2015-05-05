@@ -3,6 +3,7 @@
         
         var password = $("#Password").val();
         var userName = $("#Email").val();
+        $.cookie(Constants.CookieID_ÚserName, userName, { path: "/" });
         $.ajax({
             url: Constants.WebAPILocation + "/Token",
             type: "Post",
