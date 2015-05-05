@@ -4,14 +4,19 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +40,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import microsoft.aspnet.signalr.client.Action;
+import microsoft.aspnet.signalr.client.ErrorCallback;
+import microsoft.aspnet.signalr.client.MessageReceivedHandler;
 import microsoft.aspnet.signalr.client.SignalRFuture;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
@@ -44,13 +52,21 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import com.google.android.gms.gcm.*;
+import com.google.gson.JsonElement;
 import com.microsoft.windowsazure.messaging.*;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
+import microsoft.aspnet.signalr.client.Platform;
+import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler3;
+import microsoft.aspnet.signalr.client.transport.ClientTransport;
+import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport;
+
 
 //http://azure.microsoft.com/fi-fi/documentation/articles/notification-hubs-android-get-started/
 
 // Todo: improve network traffic usage
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ServiceCallbacks {
 
     private View mProgressView;
     private boolean timerStarted = false;
@@ -71,6 +87,15 @@ public class MainActivity extends ActionBarActivity {
     RadioGroup radioGroup;
     Button bLogOut;
     GPSTracker gps;
+    SignalRService signalRService;
+    private boolean bound = false;
+    private String messageFromNotificationHub = null;
+
+
+    public void SetMessageFromNotificationHub(String message)
+    {
+        this.messageFromNotificationHub = messageFromNotificationHub;
+    }
 
     private void PopulateSetSpinnerWithServerData()
     {
@@ -123,7 +148,7 @@ public class MainActivity extends ActionBarActivity {
             protected Object doInBackground(Object... params) {
                 try {
                     String regid = gcm.register(SENDER_ID);
-                    DialogNotify("Registered Successfully","RegId : " +
+                    DialogNotify("Registered Successfully", "RegId : " +
                             hub.register(regid).getRegistrationId());
                 } catch (Exception e) {
                     DialogNotify("Exception",e.getMessage());
@@ -182,6 +207,9 @@ public class MainActivity extends ActionBarActivity {
         mProgressView = findViewById(R.id.login_progress);
         gps = new GPSTracker(MainActivity.this);
 
+
+
+
         showProgress(true);
 
         MyHandler.mainActivity = this;
@@ -191,36 +219,231 @@ public class MainActivity extends ActionBarActivity {
         registerWithNotificationHubs();
 
 
-        HubConnection connection = new HubConnection( Constants.WebServiceLocation );
-        connection.getHeaders().put("Accept", "application/json");
-        connection.getHeaders().put("Content-Type", "application/json");
-        connection.getHeaders().put("Authorization", UserDataContainer.LoginData.token_type + " " + UserDataContainer.LoginData.access_token);
-        HubProxy hub = connection.createHubProxy( "myFitHub" );
+
+        this.updateUI();
 
 
-        SignalRFuture<Void> awaitConnection = connection.start();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int pos, long id) {
+                PopulateExerciseSpinnerWithServerData(pos);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
 
 
-        try {
-            awaitConnection.get();
-        } catch (InterruptedException e) {
-            // Handle ...
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // Handle ...
-            e.printStackTrace();
-        }
+        spinnerExercise.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-        hub.on( "refreshSets",
-                new SubscriptionHandler1<String>() {
-                    @Override
-                    public void run( String status ) {
-                        // Since we are updating the UI,
-                        // we need to use a handler of the UI thread.
-                        String statusa = status;
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int pos, long id) {
+                radioGroup.setVisibility(View.VISIBLE);
+
+                activityAction.setVisibility(View.VISIBLE);
+
+                activityStatusInfo.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
+
+
+        if(radioGroup != null) {
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                    if (checkedId == R.id.SingleRecord) {
+                        activityStatusInfo.setVisibility(View.VISIBLE);
+                        chronometer.setVisibility(View.INVISIBLE);
+                        activityAction.setText(R.string.AddExerciseRecord);
+                        activityStatusInfo.setText(R.string.ActivityRecordTextBoxHintMessage);
+                        chronometer.stop();
+                        chronometer.setBase(SystemClock.elapsedRealtime());
+                    } else if (checkedId == R.id.Timer) {
+                        activityStatusInfo.setVisibility(View.INVISIBLE);
+                        chronometer.setVisibility(View.VISIBLE);
+                        activityAction.setText(R.string.Start);
+                        timerStarted = false;
                     }
                 }
-                , String.class );
+            });
+        }
+
+
+        activityAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                boolean saveRequested = false;
+                int checkedId = radioGroup.getCheckedRadioButtonId();
+                UserDataContainer.CurrentExerciseRecord = new ExerciseRecord();
+                if (checkedId == R.id.SingleRecord) {
+
+                    UserDataContainer.CurrentExerciseRecord.Record = Double.parseDouble(activityStatusInfo.getText().toString());
+                    saveRequested = true;
+                } else if (checkedId == R.id.Timer) {
+
+                    if (timerStarted == false) {
+
+                        Location newStartLocation = gps.getLocation();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseRecordAttribute();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Name = Constants.ServerExerciseRecordAttributeName_GEOLocation;
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = new String();
+                        UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute = new ArrayList<GPSLocationData>();
+
+                        // Get the current start location
+                        if (UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null && newStartLocation != null) {
+                            GPSLocationData locationData = new GPSLocationData();
+                            locationData.Latitude = newStartLocation.getLatitude();
+                            locationData.Longitude = newStartLocation.getLongitude();
+
+                            locationData.LocationTime = 0;
+                            UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
+                        }
+                        chronometer.setBase(SystemClock.elapsedRealtime());
+                        chronometer.start();
+                        activityAction.setText(R.string.Stop);
+                        timerStarted = true;
+                    } else {
+                        chronometer.stop();
+                        Location stopLocation = gps.getLocation();
+                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+                        long seconds = elapsedMillis / 1000;
+                        int minutes = (int) seconds / 60;
+                        int hours = minutes / 60;
+                        timerStarted = false;
+                        activityAction.setText(R.string.Start);
+                        UserDataContainer.CurrentExerciseRecord.Record = elapsedMillis;
+
+
+                        // Get the current stop location where the user has stoped moving
+                        if (UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null && stopLocation != null) {
+                            GPSLocationData locationData = new GPSLocationData();
+                            locationData.Latitude = stopLocation.getLatitude();
+                            locationData.Longitude = stopLocation.getLongitude();
+
+                            locationData.LocationTime = elapsedMillis;
+                            UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
+                        }
+
+                        Gson gson = new Gson();
+                        //JSONArray jsArray = new JSONArray(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute);
+                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = gson.toJson(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute);
+                        saveRequested = true;
+                        gps.stopUsingGPS();
+                    }
+                }
+
+                if (saveRequested) {
+                    AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            UserDataContainer.CurrentExerciseRecord.StartDate = UserDataContainer.CurrentExerciseRecord.EndDate = UserDataContainer.CurrentExerciseRecord.Date = Calendar.getInstance().getTime();
+                            UserDataContainer.CurrentExerciseRecord.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int) spinner.getSelectedItemId()).Exercises.get((int) spinnerExercise.getSelectedItemId()).ID);
+
+                            JSONHttpClient jsonHttpClient = new JSONHttpClient();
+                            UserDataContainer.CurrentExerciseRecord = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecords", UserDataContainer.CurrentExerciseRecord, ExerciseRecord.class);
+                            // TODO: Add geo location support
+                            if (UserDataContainer.CurrentExerciseRecordGEOLocationAttribute != null && UserDataContainer.CurrentExerciseRecord.Id > 0) {
+                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.ExerciseRecordID = UserDataContainer.CurrentExerciseRecord.Id;
+                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseRecordAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecordAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseRecordAttribute.class);
+                            }
+
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void none) {
+                            Intent intent = new Intent(MainActivity.this, ExerciseRecordResults.class);
+                            startActivity(intent);
+
+                        }
+
+                        @Override
+                        protected void onCancelled() {
+
+
+                        }
+                    }.execute();
+
+
+                }
+            }
+        });
+
+
+        bLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                /*if(UserDataContainer.LoginData.ExpiresAsDate.after(cal.getTime()) == false) {
+                    DeviceDataStorage.RemoveFileFromDeviceStorage(Constants.UserLoginData_FileName);
+                }*/
+                DeviceDataStorage.RemoveFileFromDeviceStorage(Constants.UserLoginData_FileName);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                showProgress(false);
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(this, SignalRService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        this.startService(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Unbind from service
+        if (bound) {
+            this.signalRService.setCallbacks(null); // unregister
+            unbindService(serviceConnection);
+            bound = false;
+        }
+    }
+
+    /** Callbacks for service binding, passed to bindService() */
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // cast the IBinder and get MyService instance
+            SignalRService.LocalBinder binder = (SignalRService.LocalBinder) service;
+            signalRService = binder.getService();
+            bound = true;
+            signalRService.setCallbacks(MainActivity.this); // register
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
+
+    /* Defined by ServiceCallbacks interface */
+    @Override
+    public void updateUI() {
+
 
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
@@ -294,196 +517,10 @@ public class MainActivity extends ActionBarActivity {
 
         }.execute();
 
-
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int pos, long id) {
-                PopulateExerciseSpinnerWithServerData(pos);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
-
-
-        spinnerExercise.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int pos, long id) {
-                radioGroup.setVisibility(View.VISIBLE);
-
-                activityAction.setVisibility(View.VISIBLE);
-
-                activityStatusInfo.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
-
-
-        if(radioGroup != null) {
-            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                    if (checkedId == R.id.SingleRecord) {
-                        activityStatusInfo.setVisibility(View.VISIBLE);
-                        chronometer.setVisibility(View.INVISIBLE);
-                        activityAction.setText(R.string.AddExerciseRecord);
-                        activityStatusInfo.setText(R.string.ActivityRecordTextBoxHintMessage);
-                        chronometer.stop();
-                        chronometer.setBase(SystemClock.elapsedRealtime());
-                    } else if (checkedId == R.id.Timer) {
-                        activityStatusInfo.setVisibility(View.INVISIBLE);
-                        chronometer.setVisibility(View.VISIBLE);
-                        activityAction.setText(R.string.Start);
-                        timerStarted = false;
-                    }
-                }
-            });
-        }
-
-
-        activityAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                boolean saveRequested = false;
-                int checkedId = radioGroup.getCheckedRadioButtonId();
-                UserDataContainer.CurrentExerciseRecord = new ExerciseRecord();
-                if (checkedId == R.id.SingleRecord) {
-
-                    UserDataContainer.CurrentExerciseRecord.Record = Double.parseDouble(activityStatusInfo.getText().toString());
-                    saveRequested = true;
-                } else if (checkedId == R.id.Timer) {
-
-                    if(timerStarted == false) {
-
-                        Location newStartLocation = gps.getLocation();
-                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = new ExerciseRecordAttribute();
-                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Name = Constants.ServerExerciseRecordAttributeName_GEOLocation;
-                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = new String();
-                        UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute = new ArrayList<GPSLocationData>();
-
-                        // Get the current start location
-                        if(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null && newStartLocation != null) {
-                            GPSLocationData locationData = new GPSLocationData();
-                            locationData.Latitude = newStartLocation.getLatitude();
-                            locationData.Longitude = newStartLocation.getLongitude();
-
-                            locationData.LocationTime = 0;
-                            UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
-                        }
-                        chronometer.setBase(SystemClock.elapsedRealtime());
-                        chronometer.start();
-                        activityAction.setText(R.string.Stop);
-                        timerStarted = true;
-                    } else {
-                        chronometer.stop();
-                        Location stopLocation = gps.getLocation();
-                        long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-                        long seconds = elapsedMillis / 1000;
-                        int minutes = (int)seconds / 60;
-                        int hours = minutes / 60;
-                        timerStarted = false;
-                        activityAction.setText(R.string.Start);
-                        UserDataContainer.CurrentExerciseRecord.Record = elapsedMillis;
-
-
-
-
-                        // Get the current stop location where the user has stoped moving
-                        if(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute != null && stopLocation != null) {
-                            GPSLocationData locationData = new GPSLocationData();
-                            locationData.Latitude = stopLocation.getLatitude();
-                            locationData.Longitude = stopLocation.getLongitude();
-
-                            locationData.LocationTime = elapsedMillis;
-                            UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.add(locationData);
-                        }
-
-                        Gson gson = new Gson();
-                        //JSONArray jsArray = new JSONArray(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute);
-                        UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.Data = gson.toJson(UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute);
-                        saveRequested = true;
-                        gps.stopUsingGPS();
-                    }
-                }
-
-                if(saveRequested)
-                {
-                    AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-
-                        @Override
-                        protected Void doInBackground(Void... params) {
-                            UserDataContainer.CurrentExerciseRecord.StartDate = UserDataContainer.CurrentExerciseRecord.EndDate = UserDataContainer.CurrentExerciseRecord.Date = Calendar.getInstance().getTime();
-                            UserDataContainer.CurrentExerciseRecord.ExerciseId = Long.parseLong(UserDataContainer.UserSets.get((int)spinner.getSelectedItemId()).Exercises.get((int)spinnerExercise.getSelectedItemId()).ID);
-
-                            JSONHttpClient jsonHttpClient = new JSONHttpClient();
-                            UserDataContainer.CurrentExerciseRecord = (ExerciseRecord) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecords", UserDataContainer.CurrentExerciseRecord, ExerciseRecord.class);
-                            // TODO: Add geo location support
-                            if(UserDataContainer.CurrentExerciseRecordGEOLocationAttribute != null && UserDataContainer.CurrentExerciseRecord.Id > 0) {
-                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute.ExerciseRecordID = UserDataContainer.CurrentExerciseRecord.Id;
-                                UserDataContainer.CurrentExerciseRecordGEOLocationAttribute = (ExerciseRecordAttribute) jsonHttpClient.PostObject(Constants.WebServiceLocation + "/api/ExerciseRecordAttributes", UserDataContainer.CurrentExerciseRecordGEOLocationAttribute, ExerciseRecordAttribute.class);
-                            }
-
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void none) {
-                            Intent intent = new Intent(MainActivity.this, ExerciseRecordResults.class);
-                            startActivity(intent);
-
-                        }
-
-                        @Override
-                        protected void onCancelled() {
-
-
-                        }
-                    }.execute();
-
-
-                }
-            }
-        });
-
-
-        bLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                /*if(UserDataContainer.LoginData.ExpiresAsDate.after(cal.getTime()) == false) {
-                    DeviceDataStorage.RemoveFileFromDeviceStorage(Constants.UserLoginData_FileName);
-                }*/
-                DeviceDataStorage.RemoveFileFromDeviceStorage(Constants.UserLoginData_FileName);
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                showProgress(false);
-            }
-        });
-
     }
 
-    public String GetGPSLocationsForAttribute()
-    {
-        StringBuilder data = new StringBuilder();
-        for(int x = 0; x < UserDataContainer.CurrentExerciseRecordGEOLocationDataForAttribute.size(); ++x)
-        {
 
 
-        }
-
-        return data.toString();
-    }
 
     // TODO: Optimize but moving inside a panel type
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

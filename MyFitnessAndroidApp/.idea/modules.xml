@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MyFitnessAndroidApp.iml" filepath="$PROJECT_DIR$/MyFitnessAndroidApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/signalr-client-sdk-android-release/signalr-client-sdk-android-release.iml" filepath="$PROJECT_DIR$/signalr-client-sdk-android-release/signalr-client-sdk-android-release.iml" />
     </modules>
   </component>
 </project>
