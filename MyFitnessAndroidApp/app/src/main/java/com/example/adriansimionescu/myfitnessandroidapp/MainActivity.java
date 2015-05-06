@@ -73,11 +73,11 @@ public class MainActivity extends ActionBarActivity implements ServiceCallbacks 
     private RegisterClient registerClient;
     private static final String BACKEND_ENDPOINT = "<Enter Your Backend Endpoint>";
 
-    private String SENDER_ID = "407169728181";
+    private String SENDER_ID = "";
     private GoogleCloudMessaging gcm;
     private NotificationHub hub;
     private String HubName = "fittracker";
-    private String HubListenConnectionString = "Endpoint=sb://fittracker-ns.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=s0AifFs0m1gIN02PO7CIfLb9ciy3yeVylGEU2Jfp5yk=";
+    private String HubListenConnectionString = "";
 
     Button activityAction;
     public static Chronometer chronometer;
