@@ -28,6 +28,10 @@ namespace MyFitnessXamarinApps.iOS
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		UILabel timerInfoLabel { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UISwitch timerSwitch { get; set; }
 
 		[Outlet]
@@ -51,6 +55,10 @@ namespace MyFitnessXamarinApps.iOS
 			if (singleRecordSwitch != null) {
 				singleRecordSwitch.Dispose ();
 				singleRecordSwitch = null;
+			}
+			if (timerInfoLabel != null) {
+				timerInfoLabel.Dispose ();
+				timerInfoLabel = null;
 			}
 			if (timerSwitch != null) {
 				timerSwitch.Dispose ();

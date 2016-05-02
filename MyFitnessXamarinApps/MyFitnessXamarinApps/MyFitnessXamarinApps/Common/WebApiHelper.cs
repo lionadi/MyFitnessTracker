@@ -42,5 +42,33 @@ namespace MyFitnessXamarinApps.Common
 
             return result;
         }
+
+        public String PostAsJSON(String URL, String dataAsJSON)
+        {
+            String result = null;
+            try
+            {
+
+
+                var client = new HttpClient();
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.userLoginToken.AccessToken);
+                
+                HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, URL);
+                //requestMessage.Headers.Add("Accept", "application/json");
+                //requestMessage.Headers.Add("Content-Type", "application/json");
+
+
+                var response = client.PostAsync(URL, new StringContent(dataAsJSON, Encoding.UTF8, "application/json"));
+                result = response.Result.Content.ReadAsStringAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return result;
+
+        }
     }
 }

@@ -55,10 +55,15 @@ namespace MyFitnessXamarinApps.Core
             }
         }
 
-        public void LoginUser(String userName, String password)
+        public bool LoginUser(String userName, String password)
         {
+			bool loginOK = false;
             this.LoginData.LoginToken = TokenAuthenticator.AuthenticateUser(this.serviceURL, password, userName);
             this.webApiHelper = new WebApiHelper(this.LoginData.LoginToken);
+			if (this.LoginData.LoginToken != null && !String.IsNullOrEmpty (this.LoginData.LoginToken.AccessToken))
+				loginOK = true;
+
+			return loginOK;
         }
 
         public void LoadUserData()
@@ -85,6 +90,17 @@ namespace MyFitnessXamarinApps.Core
             if (set != null)
                 return set.Exercises.FirstOrDefault(o => o.ID == exerciseID.ToString());
             return null;
+        }
+
+        public void SaveUserActivityRecord(int setRowID, int excerciseRowID, double record)
+        {
+            var set = this.userSetsData[setRowID];
+            var excercise = set.Exercises[excerciseRowID];
+            var newExercise = new ExerciseRecord() { StartDate = DateTime.Now, EndDate = DateTime.Now, Date = DateTime.Now, ExerciseId = long.Parse(excercise.ID), Record = record };
+            var newExerciseAsJSON = JsonConvert.SerializeObject(newExercise);
+            var saveRecordServiceResults = this.webApiHelper.PostAsJSON(this.serviceAPIURL + "/ExerciseRecords", newExerciseAsJSON);
+			var NewExerciseFromServerData = JsonConvert.DeserializeObject<ExerciseRecord>(saveRecordServiceResults);
+			//this.userSetsData [setRowID].Exercises.Add (NewExerciseFromServerData);
         }
     }
 }

@@ -14,8 +14,16 @@ namespace MyFitnessXamarinApps.iOS
 	[Register ("ResultsViewController")]
 	partial class ResultsViewController
 	{
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UILabel recordValueLabel { get; set; }
+
 		void ReleaseDesignerOutlets ()
 		{
+			if (recordValueLabel != null) {
+				recordValueLabel.Dispose ();
+				recordValueLabel = null;
+			}
 		}
 	}
 }
