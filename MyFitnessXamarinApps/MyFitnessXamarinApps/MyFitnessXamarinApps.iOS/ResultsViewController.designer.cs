@@ -16,10 +16,18 @@ namespace MyFitnessXamarinApps.iOS
 	{
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
+		MapKit.MKMapView mapView { get; set; }
+
+		[Outlet]
+		[GeneratedCode ("iOS Designer", "1.0")]
 		UILabel recordValueLabel { get; set; }
 
 		void ReleaseDesignerOutlets ()
 		{
+			if (mapView != null) {
+				mapView.Dispose ();
+				mapView = null;
+			}
 			if (recordValueLabel != null) {
 				recordValueLabel.Dispose ();
 				recordValueLabel = null;

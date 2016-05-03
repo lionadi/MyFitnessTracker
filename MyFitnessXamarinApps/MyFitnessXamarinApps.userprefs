@@ -1,1 +1,18 @@
-﻿<Properties StartupItem="MyFitnessXamarinApps/MyFitnessXamarinApps.iOS/MyFitnessXamarinApps.iOS.csproj" />
+﻿<Properties StartupItem="MyFitnessXamarinApps/MyFitnessXamarinApps.iOS/MyFitnessXamarinApps.iOS.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone6sPlus.9.2" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="MyFitnessXamarinApps/MyFitnessXamarinApps/Common/WebApiHelper.cs">
+    <Files>
+      <File FileName="MyFitnessXamarinApps/MyFitnessXamarinApps/Core/ServiceOperator.cs" Line="64" Column="20" />
+      <File FileName="MyFitnessXamarinApps/MyFitnessXamarinApps/Common/WebApiHelper.cs" Line="64" Column="1" />
+      <File FileName="MyFitnessXamarinApps/MyFitnessXamarinApps.iOS/LoginViewController.cs" Line="27" Column="4" />
+      <File FileName="MyFitnessXamarinApps/MyFitnessXamarinApps.iOS/MainViewController.cs" Line="122" Column="55" />
+      <File FileName="MyFitnessXamarinApps/MyFitnessXamarinApps.iOS/ResultsViewController.cs" Line="11" Column="13" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/mac/Desktop/MyFitnessXamarinApps/MyFitnessXamarinApps/MyFitnessXamarinApps/Common/WebApiHelper.cs" line="62" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
