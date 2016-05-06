@@ -10,5 +10,6 @@ namespace MyFitnessXamarinApps.AppData
     public class UserLoginData
     {
         public Token LoginToken { get; set; }
+		public String UserName { get; set; }
     }
 }

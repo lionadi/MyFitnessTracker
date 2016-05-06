@@ -23,6 +23,7 @@ namespace MyFitnessXamarinApps.iOS
 
         private void LoginButton_TouchUpInside(object sender, EventArgs e)
         {
+			ServiceOperator.InitializeInstance (this.UserIDTextField.Text);
             ServiceOperator.GetInstance().LoginUser(this.UserIDTextField.Text, PasswordTextField.Text);
 			this.PerformSegue ("loginToMainSegue", this);
         }

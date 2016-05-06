@@ -17,6 +17,7 @@ namespace MyFitnessXamarinApps.iOS
 		private int timerSeconds = 0;
 		private bool timerEnabled = false;
 
+
 		List<GPSLocationData> userGPSLocationData;
 
 		public static bool UserInterfaceIdiomIsPhone {
@@ -58,7 +59,31 @@ namespace MyFitnessXamarinApps.iOS
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+			ServiceOperator.GetInstance ().StartSignalR ();
             ServiceOperator.GetInstance().LoadUserData();
+			ServiceOperator.GetInstance ().IsDataUpdateRequiredForMobileClientEvent += (object sender, MyFitnessXamarinApps.SignalR.SignalRClientEventArgs e) => {
+
+				UIApplication.SharedApplication.InvokeOnMainThread(new Action(() =>
+					{
+						ServiceOperator.GetInstance().LoadUserData();
+						this.userSetsPickerView.Model = new SetsUIPickerViewModel(this.userExcercisePickerView);
+						this.userExcercisePickerView.Model = new ExcercisesUIPickerViewController(0);
+						//Create Alert
+						var okAlertController = UIAlertController.Create ("Data update", "Data has changed on the server. Updating UI!", UIAlertControllerStyle.Alert);
+
+						//Add Action
+						okAlertController.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Default, null));
+
+						// Present Alert
+						PresentViewController (okAlertController, true, null);
+
+
+
+
+					}));
+				
+			};
+
             this.userSetsPickerView.Model = new SetsUIPickerViewModel(this.userExcercisePickerView);
             this.userExcercisePickerView.Model = new ExcercisesUIPickerViewController(0);
             this.timerSwitch.ValueChanged += TimerSwitch_ValueChanged;
@@ -66,6 +91,8 @@ namespace MyFitnessXamarinApps.iOS
             this.SaveButton.TouchUpInside += SaveButton_TouchUpInside;
 			this.timerInfoLabel.Text = String.Empty;
             //ServiceOperator.GetInstance().GetUserSets()
+
+
 
 
 

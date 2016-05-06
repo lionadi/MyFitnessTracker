@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MyFitnessXamarinApps.Authentication;
 using MyFitnessXamarinApps.AppData;
 using MyFitnessXamarinApps.Common;
+using MyFitnessXamarinApps.SignalR;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -25,33 +26,51 @@ namespace MyFitnessXamarinApps.Core
 
         private static ServiceOperator serviceOperationSingleton = null;
 
-        public static ServiceOperator GetInstance(String serviceURL)
-        {
-            if (serviceOperationSingleton == null)
-            {
-                serviceOperationSingleton = new ServiceOperator(serviceURL);
-            }
+		private SignalRClient signalRClient = null;
 
-            return serviceOperationSingleton;
-        }
+		public event EventHandler<SignalRClientEventArgs> IsDataUpdateRequiredForMobileClientEvent = delegate {};
+
 
         public static ServiceOperator GetInstance()
         {
-            if (serviceOperationSingleton == null)
-            {
-                serviceOperationSingleton = new ServiceOperator(Common.Constants.WebServiceLocation);
-            }
-
             return serviceOperationSingleton;
         }
 
-        public ServiceOperator(String serviceURL)
+		public static void InitializeInstance(String userName)
+		{
+			if (serviceOperationSingleton == null)
+			{
+				serviceOperationSingleton = new ServiceOperator(Common.Constants.WebServiceLocation, userName);
+			}
+		}
+
+		~ServiceOperator()
+		{
+			this.signalRClient.Stop ();
+		}
+
+		public async void StartSignalR()
+		{
+			await this.signalRClient.Start (this.LoginData.UserName);
+			this.signalRClient.AttachToSignalR ();
+		}
+
+
+		public ServiceOperator(String serviceURL, String userName)
         {
-            if(!String.IsNullOrEmpty(serviceURL))
+			if(!String.IsNullOrEmpty(serviceURL) && !String.IsNullOrEmpty(userName))
             {
                 this.LoginData = new UserLoginData();
+				this.LoginData.UserName = userName;
                 this.serviceURL = serviceURL;
                 this.serviceAPIURL = serviceURL + "/api";
+				this.signalRClient = new SignalRClient ();
+				this.signalRClient.IsDataUpdateRequiredForMobileClientEvent += (object sender, SignalRClientEventArgs e) => { 
+					//this.IsDataUpdateRequiredForMobileClientEvent( this, e);
+					ServiceOperator.GetInstance().LoadUserData();
+					this.IsDataUpdateRequiredForMobileClientEvent.Invoke(this, e);
+
+				};
             }
         }
 

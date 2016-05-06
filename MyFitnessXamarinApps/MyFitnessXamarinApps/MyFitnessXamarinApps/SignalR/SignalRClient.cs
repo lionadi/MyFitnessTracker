@@ -9,6 +9,22 @@ using MyFitnessXamarinApps.Common;
 
 namespace MyFitnessXamarinApps.SignalR
 {
+
+	public class SignalRClientEventArgs : EventArgs
+	{
+		public readonly String Name;
+		public readonly bool isRequired;
+		public readonly String Message;
+
+		public SignalRClientEventArgs(string name, bool isRequired, string message)
+		{
+			this.Name = name;
+			this.isRequired = isRequired;
+			this.Message = message;
+		}
+
+	}
+
     public class SignalRClient : ISignalRBase
     {
         private String hubLocation { get; set; }
@@ -31,6 +47,10 @@ namespace MyFitnessXamarinApps.SignalR
             }
         }
 
+		public event EventHandler<SignalRClientEventArgs> IsDataUpdateRequiredForMobileClientEvent = delegate {
+			
+		};
+
         public IHubProxy HubProxyPoint
         {
             get { return this.hubProxy; }
@@ -38,6 +58,8 @@ namespace MyFitnessXamarinApps.SignalR
 
         public SignalRClient()
         {
+			this.hubLocation = Constants.SignalRGateway;
+			this.hubProxyName = Constants.SignalRHubName;
             hubConnection = new HubConnection(this.hubLocation);
             hubProxy = hubConnection.CreateHubProxy(hubProxyName);
         }
@@ -76,6 +98,14 @@ namespace MyFitnessXamarinApps.SignalR
             await this.Start(name);
             await this.HubProxyPoint.Invoke("Send", name, message + " #Source ID: " + this.sourceID);
         }
+
+		public void AttachToSignalR()
+		{
+			this.HubProxyPoint.On<string, bool, string>("IsDataUpdateRequiredForMobileClient", (name, IsDataUpdateRequiredForWeb, message) => 
+				//this.IsDataUpdateRequiredForMobileClientEvent(this, new SignalRClientEventArgs(name, IsDataUpdateRequiredForWeb, message)) 
+				this.IsDataUpdateRequiredForMobileClientEvent.Invoke(this, new SignalRClientEventArgs(name, IsDataUpdateRequiredForWeb, message))
+			);
+		}
 
         public async Task Start(string userName)
         {
