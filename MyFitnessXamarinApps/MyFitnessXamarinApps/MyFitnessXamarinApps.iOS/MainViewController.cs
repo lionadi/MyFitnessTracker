@@ -235,6 +235,22 @@ namespace MyFitnessXamarinApps.iOS
 				else {
 					detailViewController.TimerSeconds = this.timerSeconds;
 					this.timerEnabled = false;
+					if (this.userGPSLocationData.Count <= 0) {
+						var newGPsLocation = new GPSLocationData ();
+						newGPsLocation.Latitude = 60.212929;
+						newGPsLocation.Longitude = 24.843615;
+						this.userGPSLocationData.Add (newGPsLocation);
+
+						newGPsLocation = new GPSLocationData ();
+						newGPsLocation.Latitude = 60.219690;
+						newGPsLocation.Longitude = 24.865895;
+						this.userGPSLocationData.Add (newGPsLocation);
+
+						newGPsLocation = new GPSLocationData ();
+						newGPsLocation.Latitude = 60.216988;
+						newGPsLocation.Longitude = 24.844384;
+						this.userGPSLocationData.Add (newGPsLocation);
+					}
 					detailViewController.userGPSLocationData = this.userGPSLocationData;
 					this.timerSeconds = 0;
 				}

@@ -51,7 +51,7 @@ namespace MyFitnessXamarinApps.Core
 
 		public async void StartSignalR()
 		{
-			await this.signalRClient.Start (this.LoginData.UserName);
+			await this.signalRClient.Start (this.LoginData.UserEMail);
 			this.signalRClient.AttachToSignalR ();
 		}
 
@@ -61,7 +61,7 @@ namespace MyFitnessXamarinApps.Core
 			if(!String.IsNullOrEmpty(serviceURL) && !String.IsNullOrEmpty(userName))
             {
                 this.LoginData = new UserLoginData();
-				this.LoginData.UserName = userName;
+				this.LoginData.UserEMail = userName;
                 this.serviceURL = serviceURL;
                 this.serviceAPIURL = serviceURL + "/api";
 				this.signalRClient = new SignalRClient ();
@@ -119,7 +119,14 @@ namespace MyFitnessXamarinApps.Core
             var newExerciseAsJSON = JsonConvert.SerializeObject(newExercise);
             var saveRecordServiceResults = this.webApiHelper.PostAsJSON(this.serviceAPIURL + "/ExerciseRecords", newExerciseAsJSON);
 			var NewExerciseFromServerData = JsonConvert.DeserializeObject<ExerciseRecord>(saveRecordServiceResults);
+			//TODO: Check for response status OK or FAILED
+			this.signalRClient.IsDataUpdateRequiredForWeb(this.LoginData.UserEMail, true, "New data from iOS client. UI update required on Web App.");
 			//this.userSetsData [setRowID].Exercises.Add (NewExerciseFromServerData);
         }
+
+		public async Task IsDataUpdateRequiredForWeb(string name, bool isRequired, string message)
+		{
+			this.signalRClient.IsDataUpdateRequiredForWeb (name, isRequired, message);
+		}
     }
 }

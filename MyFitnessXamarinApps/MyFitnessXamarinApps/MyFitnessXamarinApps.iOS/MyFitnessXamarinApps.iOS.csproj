@@ -125,6 +125,7 @@
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-Portrait%402x.png">
       <InProject>false</InProject>
     </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\downhill-skiing-winter-sports-wallpaper.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="Resources\ITunesArtwork" />
@@ -160,5 +161,9 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <Folder Include="UIAppLogic\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\downhill-skiing-winter-sports-wallpaper.jpg" />
+    <BundleResource Include="Resources\dcQv50O-mtb-wallpaper.jpg" />
   </ItemGroup>
 </Project>
